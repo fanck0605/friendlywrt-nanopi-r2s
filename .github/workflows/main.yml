@@ -3,7 +3,7 @@ name: r2s mininal
 on:
   push:
     branches:
-      - master
+      - lean
     paths:
       - '.github/workflows/main.yml'
       - 'patches/**'
