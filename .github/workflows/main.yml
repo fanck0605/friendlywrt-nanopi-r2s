@@ -1,4 +1,4 @@
-name: r2s mininal
+name: lean's openwrt
 
 on:
   push:
