@@ -352,7 +352,7 @@ index 9637424c..310b0038 100644
  	echo 'src/gz %d_base %U/packages/%A/base'; \
  	$(foreach feed,$(FEEDS_AVAILABLE), \
 diff --git a/include/target.mk b/include/target.mk
-index 8341e4f4..0411e158 100644
+index 8341e4f4..fd494155 100644
 --- a/include/target.mk
 +++ b/include/target.mk
 @@ -15,15 +15,13 @@ DEVICE_TYPE?=router
@@ -364,7 +364,7 @@ index 8341e4f4..0411e158 100644
 -luci-app-arpbind luci-app-vlmcsd luci-app-wol luci-app-ramfree \
 -luci-app-sfe luci-app-flowoffload luci-app-nlbwmon luci-app-accesscontrol luci-app-cpufreq \
 +default-settings luci luci-app-ddns luci-app-upnp luci-app-autoreboot \
-+luci-app-vsftpd luci-app-samba luci-app-ssr-plus luci-app-arpbind luci-app-wol \
++luci-app-vsftpd luci-app-ssr-plus luci-app-arpbind luci-app-wol \
  ddns-scripts_aliyun ddns-scripts_dnspod
  # For nas targets
  DEFAULT_PACKAGES.nas:=block-mount fdisk lsblk mdadm
@@ -11661,19 +11661,6 @@ index e2f26615..4b07ecd9 100644
  		$(OPENSSL_MAKEFLAGS) \
  		all
  	$(MAKE) -C $(PKG_BUILD_DIR) \
-diff --git a/package/network/services/dnsmasq/Makefile b/package/network/services/dnsmasq/Makefile
-index 2e841a53..6feb7906 100644
---- a/package/network/services/dnsmasq/Makefile
-+++ b/package/network/services/dnsmasq/Makefile
-@@ -97,7 +97,7 @@ define Package/dnsmasq-full/config
- 	config PACKAGE_dnsmasq_full_dhcpv6
- 		bool "Build with DHCPv6 support."
- 		depends on IPV6 && PACKAGE_dnsmasq_full_dhcp
--		default n
-+		default y
- 	config PACKAGE_dnsmasq_full_dnssec
- 		bool "Build with DNSSEC support."
- 		default n
 diff --git a/package/network/services/dnsmasq/files/dhcp.conf b/package/network/services/dnsmasq/files/dhcp.conf
 index e8284d6c..60477ed2 100644
 --- a/package/network/services/dnsmasq/files/dhcp.conf
