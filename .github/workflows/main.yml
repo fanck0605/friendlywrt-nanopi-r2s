@@ -20,9 +20,9 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@lean
+        uses: actions/checkout@master
         with:
-          ref: master
+          ref: lean
 
       - name: Initialization Environment
         env:
