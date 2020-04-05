@@ -1,0 +1,17 @@
+diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
+index f2cf1922..b32fafd2 100755
+--- a/package/lean/default-settings/files/zzz-default-settings
++++ b/package/lean/default-settings/files/zzz-default-settings
+@@ -10,6 +10,12 @@ uci commit system
+ uci set fstab.@global[0].anon_mount=1
+ uci commit fstab
+ 
++uci set network.lan.ifname='eth0'
++uci set network.wan.ifname='eth1'
++uci set network.wan6.ifname='eth1'
++uci commit network
++/etc/init.d/network reload
++
+ rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm

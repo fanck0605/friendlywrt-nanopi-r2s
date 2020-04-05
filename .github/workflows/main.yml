@@ -68,6 +68,11 @@ jobs:
         run: |
           cp config_rk3328 friendlywrt-rk3328/configs/config_rk3328
 
+      - name: Swap wan and lan
+        run: |
+          cd friendlywrt-rk3328/friendlywrt
+          git apply ../../patches/003-openwrt-swap-wan-and-lan.patch
+
       - name: Build FriendlyWrt
         run: |
           cd friendlywrt-rk3328
