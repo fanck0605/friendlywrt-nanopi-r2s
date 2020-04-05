@@ -7,11 +7,14 @@
 
 ## 特色
 * 使用 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 并 merge 了 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
+    - 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/friendlywrt-nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
     - 包含所有 coolsnowwolf/lede 的特性
     - 可以支持 friendlyarm/friendlywrt 所支持的机型
 * 集成最新实时监控 Netdata v1.20.0
 * 开启了 [full cone nat](https://github.com/Chion82/netfilter-full-cone-nat)
-* 支持 IPv6
+* 默认支持 IPv6
+* 编译时自动使用最新 lean 的源码
+* 使用内核态的 samba， 性能更高(感谢 [lean 的源码](https://github.com/coolsnowwolf/lede/issues/3135))
 
 ## 用法
 1. Fork 到自己的账号下
