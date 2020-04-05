@@ -79,10 +79,10 @@ jobs:
           ./build.sh nanopi_r2s.mk
 
       # clean compile files, release disk space
-      - name: Clean compile files
-        run: |
-          cd friendlywrt-rk3328
-          rm -rf `ls | grep -v "out"`
+#      - name: Clean compile files
+#        run: |
+#          cd friendlywrt-rk3328
+#          rm -rf `ls | grep -v "out"`
 
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
