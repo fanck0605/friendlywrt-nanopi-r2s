@@ -29,9 +29,12 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk
+          sudo docker image prune -a -f
           sudo apt-get update
           sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3.5 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib
           wget -O - https://raw.githubusercontent.com/friendlyarm/build-env-on-ubuntu-bionic/master/install.sh | bash
+          git config --global user.name "Chuck"
+          git config --global user.email "fanck0605@qq.com"
 
       - name: Install Repo
         run: |
@@ -45,8 +48,16 @@ jobs:
           rm -rf friendlywrt-rk3328
           mkdir friendlywrt-rk3328
           cd friendlywrt-rk3328
-          repo init -u https://github.com/fanck0605/friendlywrt_manifests -b master-v19.07.1 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
+          repo init -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v19.07.1 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
           repo sync -c --no-clone-bundle -j8
+
+      - name: Install lean's openwrt
+        run: |
+          cd friendlywrt-rk3328
+          rm -rf friendlywrt
+          git clone https://github.com/coolsnowwolf/lede friendlywrt
+          cd friendlywrt
+          git apply ../../patches/002-openwrt-apply-friendlywrt.patch
 
       - name: Patch Kernel
         run: |
@@ -61,6 +72,12 @@ jobs:
         run: |
           cd friendlywrt-rk3328
           ./build.sh nanopi_r2s.mk
+
+      # clean compile files, release disk space
+      - name: Clean compile files
+        run: |
+          cd friendlywrt-rk3328
+          rm -rf `ls -a | grep -v "out"`
 
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
