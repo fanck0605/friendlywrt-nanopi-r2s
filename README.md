@@ -8,7 +8,7 @@
 ## 特色
 * 使用 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 并 merge 了 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
     - 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/friendlywrt-nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
-    - 包含所有 coolsnowwolf/lede 的特性
+    - 包含大部分 coolsnowwolf/lede 的特性(flowoffload 可能有兼容问题，内核没打补丁，不能用)
     - 可以支持 friendlyarm/friendlywrt 所支持的机型
 * 集成最新实时监控 Netdata v1.20.0
 * 开启了 [full cone nat](https://github.com/Chion82/netfilter-full-cone-nat)
