@@ -13,7 +13,6 @@
 * 集成最新实时监控 Netdata，方便查看 NanoPi-R2s 的实时状态
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
 * 默认支持 IPv6，可以访问最新 IPv6 规范的互联网。
-* 使用 [cifsd](https://github.com/namjaejeon/cifsd)(内核态的 samba)，性能更高
 
 ## 用法
 1. Fork 到自己的账号下
@@ -26,8 +25,8 @@
 
 产品发布初期，官方代码每天都在变，遇到无法编译时，请过来查看 `.yml` 与 `config` 最新异动。
 
-cifsd 与 samba 有冲突，只能二选一。
-
+cifsd 与 samba 有冲突，只能二选一。(cifsd 暂时无法工作)
+ps: 可能是永久
 
 ## 参考
 * [使用Github的Actions功能在线编译NanoPi-R1S固件（包含H5和H3）](https://totoro.site/index.php/archives/70/)
