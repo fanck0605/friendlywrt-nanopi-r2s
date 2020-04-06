@@ -24,7 +24,7 @@ index 00000000..64025682
 +function create_rootfs_tgz()
 +{
 +	echo "creating base rootfs tarball(can not use directly)..."
-+	
++
 +	cd ./friendlyelec
 +	rm -rf ./rootfs ./rootfs-friendlywrt.tgz
 +
@@ -372,7 +372,7 @@ index 8341e4f4..fd494155 100644
 -DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr
 +DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr ipv6helper
  DEFAULT_PACKAGES.bootloader:=
- 
+
  ifneq ($(DUMP),)
 diff --git a/package/base-files/files/bin/config_generate b/package/base-files/files/bin/config_generate
 index ea04d17d..9bee79aa 100755
@@ -386,7 +386,7 @@ index ea04d17d..9bee79aa 100755
 +				lan) ipad=${ipaddr:-"192.168.2.1"} ;;
  				*) ipad=${ipaddr:-"192.168.$((addr_offset++)).1"} ;;
  			esac
- 
+
 diff --git a/package/base-files/files/etc/.gitignore b/package/base-files/files/etc/.gitignore
 new file mode 100644
 index 00000000..577f99e9
@@ -425,7 +425,7 @@ index 00000000..f782d847
 +        echo "Fail to enable swap: No space left on device (${DFRESULT})"
 +        exit 0
 +    fi
-+    
++
 +    dd if=/dev/zero of=/swapfile bs=1024 count=$SWAPSIZE
 +    chmod 600 /swapfile
 +    mkswap /swapfile
@@ -504,7 +504,7 @@ index 00000000..60b82a6f
 +                NEW=`basename $NEW`
 +                logger "rename $NEW to $TARGET"
 +                ip link set $NEW name $TARGET
-+                
++
 +                logger "$CONFIG update"
 +                mkdir -p /root/.friendlyelec/$MODULE
 +                cp $CONFIG /root/.friendlyelec/$MODULE/network
@@ -513,8 +513,8 @@ index 00000000..60b82a6f
 +                else
 +                        cat << EOF >> $CONFIG
 +config interface 'wan'
-+        option proto 'dhcp'               
-+        option ifname 'eth_$MODULE'              
++        option proto 'dhcp'
++        option ifname 'eth_$MODULE'
 +        option dns '8.8.8.8'
 +EOF
 +                fi
@@ -585,9 +585,9 @@ index 00000000..3aecad3d
 +EOF
 +            fi
 +
-+            uci commit 
++            uci commit
 +        fi
-+        
++
 +        wifi reload
 +        sleep 1
 +        /etc/init.d/network restart
@@ -611,7 +611,7 @@ index 00000000..20f226f0
 +
 +START=11
 +STOP=15
-+ 
++
 +start() {
 +	echo "fa-wifiap started"
 +	/bin/sh /usr/bin/fix_wifi_ap.sh > /dev/null&
@@ -670,7 +670,7 @@ index 56394773..a07d8a48 100644
 @@ -1,4 +1,14 @@
  # Put your custom commands here that should be executed once
  # the system init finished. By default this file does nothing.
- 
+
 +/usr/bin/lcd2usb_echo &
 +
 +board=$(cat /tmp/sysinfo/board_name | cut -d , -f2)
@@ -717,7 +717,7 @@ index 00000000..9924fba1
 +    wlan_path=/sys/devices/`uci get wireless.${r}.path`
 +    wlan_path=`find ${wlan_path} -name wlan* | tail -n 1`
 +    local mac=`cat ${wlan_path}/address`
-+    
++
 +    local dev_path=/sys/devices/`uci get wireless.${r}.path`
 +
 +    if [ -e "${dev_path}/../idVendor" -a -e "${dev_path}/../idProduct" ]; then
@@ -802,7 +802,7 @@ index 00000000..9924fba1
 +set network.lan.ip6assign='60'
 +EOF
 +    fi
-+    
++
 +    # update /etc/config/wireless
 +    for i in `seq 0 ${WIFI_NUM}`; do
 +        setup_ssid radio${i}
@@ -836,7 +836,7 @@ index 00000000..b7637417
 +#!/bin/sh
 +
 +#
-+# Fix loss of AP mode fails 
++# Fix loss of AP mode fails
 +#
 +
 +TIMEOUT=30
@@ -11600,9 +11600,9 @@ index 08e9ee96..56a0f48e 100644
 --- a/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
 +++ b/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
 @@ -497,8 +497,12 @@ mac80211_prepare_vif() {
- 
+
  	json_get_vars ifname mode ssid wds powersave macaddr enable
- 
+
 -	[ -n "$ifname" ] || ifname="wlan${phy#phy}${if_idx:+-$if_idx}"
 +	#[ -n "$ifname" ] || ifname="wlan${phy#phy}${if_idx:+-$if_idx}"
 +	if [ -z "$ifname" ]; then
@@ -11610,7 +11610,7 @@ index 08e9ee96..56a0f48e 100644
 +	fi
  	if_idx=$((${if_idx:-0} + 1))
 +	logger "mac80211.sh->mac80211_prepare_vif phy=$phy ifname=$ifname"
- 
+
  	set_default wds 0
  	set_default powersave 0
 @@ -816,7 +820,7 @@ mac80211_vap_cleanup() {
@@ -11621,21 +11621,20 @@ index 08e9ee96..56a0f48e 100644
 +		#iw dev "$wdev" del
  	done
  }
- 
+
 diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
-index 6bfff441..e5eb3ea1 100755
+index 11216e97..e5eb3ea1 100755
 --- a/package/lean/default-settings/files/zzz-default-settings
 +++ b/package/lean/default-settings/files/zzz-default-settings
 @@ -29,12 +29,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
- 
+
  ln -sf /sbin/ip /usr/bin/ip
- 
+
 -sed -i 's/downloads.openwrt.org/openwrt.proxy.ustclug.org/g' /etc/opkg/distfeeds.conf
--sed -i 's/http/https/g' /etc/opkg/distfeeds.conf
 +sed -i 's/downloads.openwrt.org/mirrors.tuna.tsinghua.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
-+sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
+ sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
  sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
- 
+
 -sed -i "s/# //g" /etc/opkg/distfeeds.conf
 -
  sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
@@ -11648,10 +11647,10 @@ index e2f26615..4b07ecd9 100644
 @@ -340,7 +340,6 @@ define Build/Configure
  	)
  endef
- 
+
 -TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections
  TARGET_LDFLAGS += -Wl,--gc-sections
- 
+
  define Build/Compile
 @@ -348,7 +347,7 @@ define Build/Compile
  		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -11672,7 +11671,7 @@ index e8284d6c..60477ed2 100644
  	option localservice	1  # disable to allow DNS requests from non-local subnets
 -	option filter_aaaa 1
 +	option filter_aaaa	0
- 
+
  config dhcp lan
  	option interface	lan
 diff --git a/package/utils/usbmode/Makefile b/package/utils/usbmode/Makefile
@@ -14836,7 +14835,7 @@ index 00000000..4e63ec57
 +				"mode": "StandardEject",
 +				"msg": [  ]
 +			}
-+		} 
++		}
 +	}
 +}
 diff --git a/target/linux/allwinner-h5/Makefile b/target/linux/allwinner-h5/Makefile
@@ -15350,7 +15349,7 @@ index 00000000..4b010058
 +    for i in $(seq 0 ${OL_NUM}); do
 +        local temp=`cat ${TEMP_FILE}`
 +        if [ -e /sys/devices/system/cpu/cpu${i}/online ]; then
-+            let online=`cat /sys/devices/system/cpu/cpu${i}/online` 
++            let online=`cat /sys/devices/system/cpu/cpu${i}/online`
 +        else
 +            let online=1
 +        fi
@@ -15372,7 +15371,7 @@ index 00000000..4b010058
 +    if [ ! -e "${1}/name" ]; then
 +        return
 +    fi
-+    
++
 +    local n=`cat ${1}/name`
 +    echo "Current voltage(uV, ${n}):"
 +    echo -e "\t"`cat ${1}/microvolts`"uV"
@@ -15380,7 +15379,7 @@ index 00000000..4b010058
 +
 +function find_regulator()
 +{
-+    for file in /sys/class/regulator/*; do 
++    for file in /sys/class/regulator/*; do
 +        n=`cat ${file}/name`
 +        if [ "x${n}" = "x${1}" ]; then
 +            echo ${file}
@@ -16039,12 +16038,12 @@ index 00000000..efd13da5
 + 	bool                    is_rgx;
 ++	int			phy_mode;
 + };
-+ 
++
 + static struct bgx *bgx_vnic[MAX_BGX_THUNDER];
 +@@ -841,12 +842,12 @@ static void bgx_poll_for_link(struct wor
 + 	queue_delayed_work(lmac->check_link, &lmac->dwork, HZ * 2);
 + }
-+ 
++
 +-static int phy_interface_mode(u8 lmac_type)
 ++static int phy_interface_mode(struct bgx *bgx, u8 lmac_type)
 + {
@@ -16053,22 +16052,22 @@ index 00000000..efd13da5
 + 	if (lmac_type == BGX_MODE_RGMII)
 +-		return PHY_INTERFACE_MODE_RGMII;
 ++		return bgx->phy_mode;
-+ 
++
 + 	return PHY_INTERFACE_MODE_SGMII;
 + }
 +@@ -912,7 +913,8 @@ static int bgx_lmac_enable(struct bgx *b
-+ 
++
 + 		if (phy_connect_direct(&lmac->netdev, lmac->phydev,
 + 				       bgx_lmac_handler,
 +-				       phy_interface_mode(lmac->lmac_type)))
 ++				       phy_interface_mode(bgx,
 ++							  lmac->lmac_type)))
 + 			return -ENODEV;
-+ 
++
 + 		phy_start_aneg(lmac->phydev);
 +@@ -1287,6 +1289,8 @@ static int bgx_init_of_phy(struct bgx *b
 + 		bgx->lmac[lmac].lmacid = lmac;
-+ 
++
 + 		phy_np = of_parse_phandle(node, "phy-handle", 0);
 ++		if (phy_np)
 ++			bgx->phy_mode = of_get_phy_mode(phy_np);
@@ -16081,43 +16080,43 @@ index 00000000..efd13da5
 + 		bgx_vnic[bgx->bgx_id] = bgx;
 +-		xcv_init_hw();
 + 	}
-+ 
++
 + 	/* On 81xx all are DLMs and on 83xx there are 3 BGX QLMs and one
 +@@ -1407,6 +1410,8 @@ static int bgx_probe(struct pci_dev *pde
 + 	if (err)
 + 		goto err_enable;
-+ 
++
 ++	if (bgx->is_rgx)
 ++		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 + 	/* Enable all LMACs */
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 +@@ -226,7 +226,7 @@ void bgx_lmac_internal_loopback(int node
 + void bgx_lmac_get_pfc(int node, int bgx_idx, int lmacid, void *pause);
 + void bgx_lmac_set_pfc(int node, int bgx_idx, int lmacid, void *pause);
-+ 
++
 +-void xcv_init_hw(void);
 ++void xcv_init_hw(int phy_mode);
 + void xcv_setup_link(bool link_up, int link_speed);
-+ 
++
 + u64 bgx_get_rx_stats(int node, int bgx_idx, int lmac, int idx);
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 +@@ -65,7 +65,7 @@ MODULE_LICENSE("GPL v2");
 + MODULE_VERSION(DRV_VERSION);
 + MODULE_DEVICE_TABLE(pci, xcv_id_table);
-+ 
++
 +-void xcv_init_hw(void)
 ++void xcv_init_hw(int phy_mode)
 + {
 + 	u64  cfg;
-+ 
++
 +@@ -81,12 +81,31 @@ void xcv_init_hw(void)
 + 	/* Wait for DLL to lock */
 + 	msleep(1);
-+ 
++
 +-	/* Configure DLL - enable or bypass
 +-	 * TX no bypass, RX bypass
 +-	 */
@@ -16149,7 +16148,7 @@ index 00000000..efd13da5
 ++		break;
 ++	}
 + 	writeq_relaxed(cfg, xcv->reg_base + XCV_DLL_CTL);
-+ 
++
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
@@ -16177,7 +16176,7 @@ index 00000000..ef7aef3a
 +@@ -1344,6 +1344,54 @@ static int bgx_init_phy(struct bgx *bgx)
 + 	return bgx_init_of_phy(bgx);
 + }
-+ 
++
 ++static irqreturn_t bgx_intr_handler(int irq, void *data)
 ++{
 ++	struct bgx *bgx = (struct bgx *)data;
@@ -16232,7 +16231,7 @@ index 00000000..ef7aef3a
 +@@ -1414,6 +1462,8 @@ static int bgx_probe(struct pci_dev *pde
 + 		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 ++	bgx_register_intr(pdev);
 ++
 + 	/* Enable all LMACs */
@@ -16247,7 +16246,7 @@ index 00000000..ef7aef3a
 ++		bgx_reg_modify(bgx, lmac, BGX_GMP_GMI_TXX_INT_ENA_W1S,
 ++			       GMI_TXX_INT_UNDFLW);
 + 	}
-+ 
++
 + 	return 0;
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
@@ -16264,7 +16263,7 @@ index 00000000..ef7aef3a
 ++#define  GMI_TXX_INT_XSDEF			BIT_ULL(2)
 ++#define  GMI_TXX_INT_XSCOL			BIT_ULL(1)
 ++#define  GMI_TXX_INT_UNDFLW			BIT_ULL(0)
-+ 
++
 + #define BGX_MSIX_VEC_0_29_ADDR		0x400000 /* +(0..29) << 4 */
 + #define BGX_MSIX_VEC_0_29_CTL		0x400008
 diff --git a/target/linux/allwinner-h5/profiles/00-default.mk b/target/linux/allwinner-h5/profiles/00-default.mk
@@ -17614,7 +17613,7 @@ index 00000000..9de7eeee
 + 	depends on PCI
 +-	depends on PCI_MSI_IRQ_DOMAIN
 +         select PCIE_DW
-+ 
++
 + config PCIE_DW_EP
 +@@ -74,7 +73,6 @@ config PCI_IMX6
 + 	bool "Freescale i.MX6 PCIe controller"
@@ -17623,7 +17622,7 @@ index 00000000..9de7eeee
 +-	depends on PCI_MSI_IRQ_DOMAIN
 + 	select PCIEPORTBUS
 + 	select PCIE_DW_HOST
-+ 
++
 diff --git a/target/linux/nexell-s5p4418/patches-4.14/301-apalis-ixora-dts-leds.patch b/target/linux/nexell-s5p4418/patches-4.14/301-apalis-ixora-dts-leds.patch
 new file mode 100644
 index 00000000..acec1e8e
@@ -17645,30 +17644,30 @@ index 00000000..acec1e8e
 ++		led-running = &led_running;
 ++		led-upgrade = &led_upgrade;
 + 	};
-+ 
++
 + 	gpio-keys {
 +@@ -123,22 +127,22 @@
 + 		pinctrl-names = "default";
 + 		pinctrl-0 = <&pinctrl_leds_ixora>;
-+ 
++
 +-		led4-green {
 ++		led_running: led4-green {
 + 			label = "LED_4_GREEN";
 + 			gpios = <&gpio1 17 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led4-red {
 ++		led_upgrade: led4-red {
 + 			label = "LED_4_RED";
 + 			gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-green {
 ++		led_boot: led5-green {
 + 			label = "LED_5_GREEN";
 + 			gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-red {
 ++		led_failsafe: led5-red {
 + 			label = "LED_5_RED";
@@ -17685,32 +17684,32 @@ index 00000000..acec1e8e
 ++		led-running = &led_running;
 ++		led-upgrade = &led_upgrade;
 + 	};
-+ 
++
 + 	gpio-keys {
 +@@ -124,22 +128,22 @@
 + 		pinctrl-names = "default";
 + 		pinctrl-0 = <&pinctrl_leds_ixora>;
-+ 
++
 +-		led4-green {
 ++		led_running: led4-green {
 + 			label = "LED_4_GREEN";
 +-			gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;
 ++			gpios = <&gpio1 17 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led4-red {
 ++		led_upgrade: led4-red {
 + 			label = "LED_4_RED";
 +-			gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 ++			gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-green {
 ++		led_boot: led5-green {
 + 			label = "LED_5_GREEN";
 + 			gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-red {
 ++		led_failsafe: led5-red {
 + 			label = "LED_5_RED";
@@ -17734,7 +17733,7 @@ index 00000000..ede872fb
 + 		pinctrl-names = "default";
 +-		pinctrl-0 = <&pinctrl_gpio_keys>;
 ++		pinctrl-0 = <&pinctrl_gpio_keys &pinctrl_switch3_ixora>;
-+ 
++
 + 		wakeup {
 + 			label = "Wake-Up";
 +@@ -79,6 +79,13 @@
@@ -17749,7 +17748,7 @@ index 00000000..ede872fb
 ++			debounce-interval = <10>;
 ++		};
 + 	};
-+ 
++
 + 	lcd_display: display@di0 {
 +@@ -292,4 +299,10 @@
 + 			MX6QDL_PAD_NANDF_D2__GPIO2_IO02 0x1b0b0
@@ -17770,7 +17769,7 @@ index 00000000..ede872fb
 + 		pinctrl-names = "default";
 +-		pinctrl-0 = <&pinctrl_gpio_keys>;
 ++		pinctrl-0 = <&pinctrl_gpio_keys &pinctrl_switch3_ixora>;
-+ 
++
 + 		wakeup {
 + 			label = "Wake-Up";
 +@@ -78,6 +78,13 @@
@@ -17785,7 +17784,7 @@ index 00000000..ede872fb
 ++			debounce-interval = <10>;
 ++		};
 + 	};
-+ 
++
 + 	lcd_display: display@di0 {
 +@@ -293,4 +300,10 @@
 + 			MX6QDL_PAD_NANDF_D2__GPIO2_IO02 0x1b0b0
@@ -17836,30 +17835,30 @@ index 00000000..bae9df17
 ++		led-running = &led_running;
 ++		led-upgrade = &led_upgrade;
 + 	};
-+ 
++
 + 	chosen {
 +@@ -127,22 +131,22 @@
 + 		pinctrl-names = "default";
 + 		pinctrl-0 = <&pinctrl_leds_ixora>;
-+ 
++
 +-		led4-green {
 ++		led_running: led4-green {
 + 			label = "LED_4_GREEN";
 + 			gpios = <&gpio1 17 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led4-red {
 ++		led_upgrade: led4-red {
 + 			label = "LED_4_RED";
 + 			gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-green {
 ++		led_boot: led5-green {
 + 			label = "LED_5_GREEN";
 + 			gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-red {
 ++		led_failsafe: led5-red {
 + 			label = "LED_5_RED";
@@ -17876,32 +17875,32 @@ index 00000000..bae9df17
 ++		led-running = &led_running;
 ++		led-upgrade = &led_upgrade;
 + 	};
-+ 
++
 + 	chosen {
 +@@ -128,22 +132,22 @@
 + 		pinctrl-names = "default";
 + 		pinctrl-0 = <&pinctrl_leds_ixora>;
-+ 
++
 +-		led4-green {
 ++		led_running: led4-green {
 + 			label = "LED_4_GREEN";
 +-			gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;
 ++			gpios = <&gpio1 17 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led4-red {
 ++		led_upgrade: led4-red {
 + 			label = "LED_4_RED";
 +-			gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 ++			gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-green {
 ++		led_boot: led5-green {
 + 			label = "LED_5_GREEN";
 + 			gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
 + 		};
-+ 
++
 +-		led5-red {
 ++		led_failsafe: led5-red {
 + 			label = "LED_5_RED";
@@ -17925,7 +17924,7 @@ index 00000000..da9de296
 + 		pinctrl-names = "default";
 +-		pinctrl-0 = <&pinctrl_gpio_keys>;
 ++		pinctrl-0 = <&pinctrl_gpio_keys &pinctrl_switch3_ixora>;
-+ 
++
 + 		wakeup {
 + 			label = "Wake-Up";
 +@@ -83,6 +83,13 @@
@@ -17940,7 +17939,7 @@ index 00000000..da9de296
 ++			debounce-interval = <10>;
 ++		};
 + 	};
-+ 
++
 + 	lcd_display: disp0 {
 +@@ -296,4 +303,10 @@
 + 			MX6QDL_PAD_NANDF_D2__GPIO2_IO02 0x1b0b0
@@ -17961,7 +17960,7 @@ index 00000000..da9de296
 + 		pinctrl-names = "default";
 +-		pinctrl-0 = <&pinctrl_gpio_keys>;
 ++		pinctrl-0 = <&pinctrl_gpio_keys &pinctrl_switch3_ixora>;
-+ 
++
 + 		wakeup {
 + 			label = "Wake-Up";
 +@@ -82,6 +82,13 @@
@@ -17976,7 +17975,7 @@ index 00000000..da9de296
 ++			debounce-interval = <10>;
 ++		};
 + 	};
-+ 
++
 + 	lcd_display: disp0 {
 +@@ -297,4 +304,10 @@
 + 			MX6QDL_PAD_NANDF_D2__GPIO2_IO02 0x1b0b0
@@ -18090,7 +18089,7 @@ index 00000000..198bc379
 +"friendlyelec,nanopc-t3" \
 +|"friendlyelec,nanopi-m3b" \
 +|"friendlyelec,smart6818")
-+	ucidef_set_interfaces_lan_wan "wlan0" "eth0"	
++	ucidef_set_interfaces_lan_wan "wlan0" "eth0"
 +	;;
 +*)
 +	ucidef_set_interface_lan 'eth0'
@@ -18730,12 +18729,12 @@ index 00000000..efd13da5
 + 	bool                    is_rgx;
 ++	int			phy_mode;
 + };
-+ 
++
 + static struct bgx *bgx_vnic[MAX_BGX_THUNDER];
 +@@ -841,12 +842,12 @@ static void bgx_poll_for_link(struct wor
 + 	queue_delayed_work(lmac->check_link, &lmac->dwork, HZ * 2);
 + }
-+ 
++
 +-static int phy_interface_mode(u8 lmac_type)
 ++static int phy_interface_mode(struct bgx *bgx, u8 lmac_type)
 + {
@@ -18744,22 +18743,22 @@ index 00000000..efd13da5
 + 	if (lmac_type == BGX_MODE_RGMII)
 +-		return PHY_INTERFACE_MODE_RGMII;
 ++		return bgx->phy_mode;
-+ 
++
 + 	return PHY_INTERFACE_MODE_SGMII;
 + }
 +@@ -912,7 +913,8 @@ static int bgx_lmac_enable(struct bgx *b
-+ 
++
 + 		if (phy_connect_direct(&lmac->netdev, lmac->phydev,
 + 				       bgx_lmac_handler,
 +-				       phy_interface_mode(lmac->lmac_type)))
 ++				       phy_interface_mode(bgx,
 ++							  lmac->lmac_type)))
 + 			return -ENODEV;
-+ 
++
 + 		phy_start_aneg(lmac->phydev);
 +@@ -1287,6 +1289,8 @@ static int bgx_init_of_phy(struct bgx *b
 + 		bgx->lmac[lmac].lmacid = lmac;
-+ 
++
 + 		phy_np = of_parse_phandle(node, "phy-handle", 0);
 ++		if (phy_np)
 ++			bgx->phy_mode = of_get_phy_mode(phy_np);
@@ -18772,43 +18771,43 @@ index 00000000..efd13da5
 + 		bgx_vnic[bgx->bgx_id] = bgx;
 +-		xcv_init_hw();
 + 	}
-+ 
++
 + 	/* On 81xx all are DLMs and on 83xx there are 3 BGX QLMs and one
 +@@ -1407,6 +1410,8 @@ static int bgx_probe(struct pci_dev *pde
 + 	if (err)
 + 		goto err_enable;
-+ 
++
 ++	if (bgx->is_rgx)
 ++		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 + 	/* Enable all LMACs */
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 +@@ -226,7 +226,7 @@ void bgx_lmac_internal_loopback(int node
 + void bgx_lmac_get_pfc(int node, int bgx_idx, int lmacid, void *pause);
 + void bgx_lmac_set_pfc(int node, int bgx_idx, int lmacid, void *pause);
-+ 
++
 +-void xcv_init_hw(void);
 ++void xcv_init_hw(int phy_mode);
 + void xcv_setup_link(bool link_up, int link_speed);
-+ 
++
 + u64 bgx_get_rx_stats(int node, int bgx_idx, int lmac, int idx);
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 +@@ -65,7 +65,7 @@ MODULE_LICENSE("GPL v2");
 + MODULE_VERSION(DRV_VERSION);
 + MODULE_DEVICE_TABLE(pci, xcv_id_table);
-+ 
++
 +-void xcv_init_hw(void)
 ++void xcv_init_hw(int phy_mode)
 + {
 + 	u64  cfg;
-+ 
++
 +@@ -81,12 +81,31 @@ void xcv_init_hw(void)
 + 	/* Wait for DLL to lock */
 + 	msleep(1);
-+ 
++
 +-	/* Configure DLL - enable or bypass
 +-	 * TX no bypass, RX bypass
 +-	 */
@@ -18840,7 +18839,7 @@ index 00000000..efd13da5
 ++		break;
 ++	}
 + 	writeq_relaxed(cfg, xcv->reg_base + XCV_DLL_CTL);
-+ 
++
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
@@ -18868,7 +18867,7 @@ index 00000000..ef7aef3a
 +@@ -1344,6 +1344,54 @@ static int bgx_init_phy(struct bgx *bgx)
 + 	return bgx_init_of_phy(bgx);
 + }
-+ 
++
 ++static irqreturn_t bgx_intr_handler(int irq, void *data)
 ++{
 ++	struct bgx *bgx = (struct bgx *)data;
@@ -18923,7 +18922,7 @@ index 00000000..ef7aef3a
 +@@ -1414,6 +1462,8 @@ static int bgx_probe(struct pci_dev *pde
 + 		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 ++	bgx_register_intr(pdev);
 ++
 + 	/* Enable all LMACs */
@@ -18938,7 +18937,7 @@ index 00000000..ef7aef3a
 ++		bgx_reg_modify(bgx, lmac, BGX_GMP_GMI_TXX_INT_ENA_W1S,
 ++			       GMI_TXX_INT_UNDFLW);
 + 	}
-+ 
++
 + 	return 0;
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
@@ -18955,7 +18954,7 @@ index 00000000..ef7aef3a
 ++#define  GMI_TXX_INT_XSDEF			BIT_ULL(2)
 ++#define  GMI_TXX_INT_XSCOL			BIT_ULL(1)
 ++#define  GMI_TXX_INT_UNDFLW			BIT_ULL(0)
-+ 
++
 + #define BGX_MSIX_VEC_0_29_ADDR		0x400000 /* +(0..29) << 4 */
 + #define BGX_MSIX_VEC_0_29_CTL		0x400008
 diff --git a/target/linux/nexell-s5p6818/profiles/00-default.mk b/target/linux/nexell-s5p6818/profiles/00-default.mk
@@ -19100,15 +19099,15 @@ index 00000000..f69b1cbe
 +#!/bin/sh /etc/rc.common
 +
 +START=97
-+ 
++
 +start() {
 +  # eth0
-+  echo netdev > /sys/class/leds/wan_led/trigger 
-+  echo eth0 > /sys/class/leds/wan_led/device_name 
++  echo netdev > /sys/class/leds/wan_led/trigger
++  echo eth0 > /sys/class/leds/wan_led/device_name
 +  echo 1 > /sys/class/leds/wan_led/link
 +  # eth1
-+  echo netdev > /sys/class/leds/lan_led/trigger 
-+  echo eth1 > /sys/class/leds/lan_led/device_name 
++  echo netdev > /sys/class/leds/lan_led/trigger
++  echo eth1 > /sys/class/leds/lan_led/device_name
 +  echo 1 > /sys/class/leds/lan_led/link
 +}
 +
@@ -19121,7 +19120,7 @@ index 00000000..af44f78a
 +#!/bin/sh /etc/rc.common
 +
 +START=96
-+ 
++
 +start() {
 +    [ -f /proc/irq/28/smp_affinity ] && echo 8 > /proc/irq/28/smp_affinity
 +    echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
@@ -19136,7 +19135,7 @@ index 00000000..dd07aa13
 +#!/bin/sh /etc/rc.common
 +
 +START=96
-+ 
++
 +start() {
 +	echo "fa-pwmfan started"
 +	/usr/bin/start-rk3328-pwm-fan.sh > /dev/null&
@@ -19265,13 +19264,13 @@ index 00000000..7b205843
 +	FOUNDTEMP=0
 +	DUTY=$DefaultDuty
 +	PERCENT=$DefaultPercents
-+	
++
 +	for i in 0 1 2 3; do
 +		if [ $temp -gt ${CpuTemps[$i]} ]; then
 +			INDEX=$i
 +			FOUNDTEMP=1
 +			break
-+		fi	
++		fi
 +	done
 +	if [ ${FOUNDTEMP} == 1 ]; then
 +		DUTY=${PwmDutyCycles[$i]}
@@ -19897,12 +19896,12 @@ index 00000000..efd13da5
 + 	bool                    is_rgx;
 ++	int			phy_mode;
 + };
-+ 
++
 + static struct bgx *bgx_vnic[MAX_BGX_THUNDER];
 +@@ -841,12 +842,12 @@ static void bgx_poll_for_link(struct wor
 + 	queue_delayed_work(lmac->check_link, &lmac->dwork, HZ * 2);
 + }
-+ 
++
 +-static int phy_interface_mode(u8 lmac_type)
 ++static int phy_interface_mode(struct bgx *bgx, u8 lmac_type)
 + {
@@ -19911,22 +19910,22 @@ index 00000000..efd13da5
 + 	if (lmac_type == BGX_MODE_RGMII)
 +-		return PHY_INTERFACE_MODE_RGMII;
 ++		return bgx->phy_mode;
-+ 
++
 + 	return PHY_INTERFACE_MODE_SGMII;
 + }
 +@@ -912,7 +913,8 @@ static int bgx_lmac_enable(struct bgx *b
-+ 
++
 + 		if (phy_connect_direct(&lmac->netdev, lmac->phydev,
 + 				       bgx_lmac_handler,
 +-				       phy_interface_mode(lmac->lmac_type)))
 ++				       phy_interface_mode(bgx,
 ++							  lmac->lmac_type)))
 + 			return -ENODEV;
-+ 
++
 + 		phy_start_aneg(lmac->phydev);
 +@@ -1287,6 +1289,8 @@ static int bgx_init_of_phy(struct bgx *b
 + 		bgx->lmac[lmac].lmacid = lmac;
-+ 
++
 + 		phy_np = of_parse_phandle(node, "phy-handle", 0);
 ++		if (phy_np)
 ++			bgx->phy_mode = of_get_phy_mode(phy_np);
@@ -19939,43 +19938,43 @@ index 00000000..efd13da5
 + 		bgx_vnic[bgx->bgx_id] = bgx;
 +-		xcv_init_hw();
 + 	}
-+ 
++
 + 	/* On 81xx all are DLMs and on 83xx there are 3 BGX QLMs and one
 +@@ -1407,6 +1410,8 @@ static int bgx_probe(struct pci_dev *pde
 + 	if (err)
 + 		goto err_enable;
-+ 
++
 ++	if (bgx->is_rgx)
 ++		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 + 	/* Enable all LMACs */
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 +@@ -226,7 +226,7 @@ void bgx_lmac_internal_loopback(int node
 + void bgx_lmac_get_pfc(int node, int bgx_idx, int lmacid, void *pause);
 + void bgx_lmac_set_pfc(int node, int bgx_idx, int lmacid, void *pause);
-+ 
++
 +-void xcv_init_hw(void);
 ++void xcv_init_hw(int phy_mode);
 + void xcv_setup_link(bool link_up, int link_speed);
-+ 
++
 + u64 bgx_get_rx_stats(int node, int bgx_idx, int lmac, int idx);
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 +@@ -65,7 +65,7 @@ MODULE_LICENSE("GPL v2");
 + MODULE_VERSION(DRV_VERSION);
 + MODULE_DEVICE_TABLE(pci, xcv_id_table);
-+ 
++
 +-void xcv_init_hw(void)
 ++void xcv_init_hw(int phy_mode)
 + {
 + 	u64  cfg;
-+ 
++
 +@@ -81,12 +81,31 @@ void xcv_init_hw(void)
 + 	/* Wait for DLL to lock */
 + 	msleep(1);
-+ 
++
 +-	/* Configure DLL - enable or bypass
 +-	 * TX no bypass, RX bypass
 +-	 */
@@ -20007,7 +20006,7 @@ index 00000000..efd13da5
 ++		break;
 ++	}
 + 	writeq_relaxed(cfg, xcv->reg_base + XCV_DLL_CTL);
-+ 
++
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
@@ -20035,7 +20034,7 @@ index 00000000..ef7aef3a
 +@@ -1344,6 +1344,54 @@ static int bgx_init_phy(struct bgx *bgx)
 + 	return bgx_init_of_phy(bgx);
 + }
-+ 
++
 ++static irqreturn_t bgx_intr_handler(int irq, void *data)
 ++{
 ++	struct bgx *bgx = (struct bgx *)data;
@@ -20090,7 +20089,7 @@ index 00000000..ef7aef3a
 +@@ -1414,6 +1462,8 @@ static int bgx_probe(struct pci_dev *pde
 + 		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 ++	bgx_register_intr(pdev);
 ++
 + 	/* Enable all LMACs */
@@ -20105,7 +20104,7 @@ index 00000000..ef7aef3a
 ++		bgx_reg_modify(bgx, lmac, BGX_GMP_GMI_TXX_INT_ENA_W1S,
 ++			       GMI_TXX_INT_UNDFLW);
 + 	}
-+ 
++
 + 	return 0;
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
@@ -20122,7 +20121,7 @@ index 00000000..ef7aef3a
 ++#define  GMI_TXX_INT_XSDEF			BIT_ULL(2)
 ++#define  GMI_TXX_INT_XSCOL			BIT_ULL(1)
 ++#define  GMI_TXX_INT_UNDFLW			BIT_ULL(0)
-+ 
++
 + #define BGX_MSIX_VEC_0_29_ADDR		0x400000 /* +(0..29) << 4 */
 + #define BGX_MSIX_VEC_0_29_CTL		0x400008
 diff --git a/target/linux/rockchip-rk3328/profiles/00-default.mk b/target/linux/rockchip-rk3328/profiles/00-default.mk
@@ -20269,7 +20268,7 @@ index 00000000..84c019d1
 +#!/bin/sh /etc/rc.common
 +
 +START=96
-+ 
++
 +start() {
 +	echo "fa-pwmfan started"
 +	/usr/bin/start-rk3399-pwm-fan.sh > /dev/null&
@@ -20350,13 +20349,13 @@ index 00000000..7a6782b3
 +	FOUNDTEMP=0
 +	DUTY=$DefaultDuty
 +	PERCENT=$DefaultPercents
-+	
++
 +	for i in 0 1 2 3; do
 +		if [ $temp -gt ${CpuTemps[$i]} ]; then
 +			INDEX=$i
 +			FOUNDTEMP=1
 +			break
-+		fi	
++		fi
 +	done
 +	if [ ${FOUNDTEMP} == 1 ]; then
 +		DUTY=${PwmDutyCycles[$i]}
@@ -20982,12 +20981,12 @@ index 00000000..efd13da5
 + 	bool                    is_rgx;
 ++	int			phy_mode;
 + };
-+ 
++
 + static struct bgx *bgx_vnic[MAX_BGX_THUNDER];
 +@@ -841,12 +842,12 @@ static void bgx_poll_for_link(struct wor
 + 	queue_delayed_work(lmac->check_link, &lmac->dwork, HZ * 2);
 + }
-+ 
++
 +-static int phy_interface_mode(u8 lmac_type)
 ++static int phy_interface_mode(struct bgx *bgx, u8 lmac_type)
 + {
@@ -20996,22 +20995,22 @@ index 00000000..efd13da5
 + 	if (lmac_type == BGX_MODE_RGMII)
 +-		return PHY_INTERFACE_MODE_RGMII;
 ++		return bgx->phy_mode;
-+ 
++
 + 	return PHY_INTERFACE_MODE_SGMII;
 + }
 +@@ -912,7 +913,8 @@ static int bgx_lmac_enable(struct bgx *b
-+ 
++
 + 		if (phy_connect_direct(&lmac->netdev, lmac->phydev,
 + 				       bgx_lmac_handler,
 +-				       phy_interface_mode(lmac->lmac_type)))
 ++				       phy_interface_mode(bgx,
 ++							  lmac->lmac_type)))
 + 			return -ENODEV;
-+ 
++
 + 		phy_start_aneg(lmac->phydev);
 +@@ -1287,6 +1289,8 @@ static int bgx_init_of_phy(struct bgx *b
 + 		bgx->lmac[lmac].lmacid = lmac;
-+ 
++
 + 		phy_np = of_parse_phandle(node, "phy-handle", 0);
 ++		if (phy_np)
 ++			bgx->phy_mode = of_get_phy_mode(phy_np);
@@ -21024,43 +21023,43 @@ index 00000000..efd13da5
 + 		bgx_vnic[bgx->bgx_id] = bgx;
 +-		xcv_init_hw();
 + 	}
-+ 
++
 + 	/* On 81xx all are DLMs and on 83xx there are 3 BGX QLMs and one
 +@@ -1407,6 +1410,8 @@ static int bgx_probe(struct pci_dev *pde
 + 	if (err)
 + 		goto err_enable;
-+ 
++
 ++	if (bgx->is_rgx)
 ++		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 + 	/* Enable all LMACs */
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 +@@ -226,7 +226,7 @@ void bgx_lmac_internal_loopback(int node
 + void bgx_lmac_get_pfc(int node, int bgx_idx, int lmacid, void *pause);
 + void bgx_lmac_set_pfc(int node, int bgx_idx, int lmacid, void *pause);
-+ 
++
 +-void xcv_init_hw(void);
 ++void xcv_init_hw(int phy_mode);
 + void xcv_setup_link(bool link_up, int link_speed);
-+ 
++
 + u64 bgx_get_rx_stats(int node, int bgx_idx, int lmac, int idx);
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_xcv.c
 +@@ -65,7 +65,7 @@ MODULE_LICENSE("GPL v2");
 + MODULE_VERSION(DRV_VERSION);
 + MODULE_DEVICE_TABLE(pci, xcv_id_table);
-+ 
++
 +-void xcv_init_hw(void)
 ++void xcv_init_hw(int phy_mode)
 + {
 + 	u64  cfg;
-+ 
++
 +@@ -81,12 +81,31 @@ void xcv_init_hw(void)
 + 	/* Wait for DLL to lock */
 + 	msleep(1);
-+ 
++
 +-	/* Configure DLL - enable or bypass
 +-	 * TX no bypass, RX bypass
 +-	 */
@@ -21092,7 +21091,7 @@ index 00000000..efd13da5
 ++		break;
 ++	}
 + 	writeq_relaxed(cfg, xcv->reg_base + XCV_DLL_CTL);
-+ 
++
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
@@ -21120,7 +21119,7 @@ index 00000000..ef7aef3a
 +@@ -1344,6 +1344,54 @@ static int bgx_init_phy(struct bgx *bgx)
 + 	return bgx_init_of_phy(bgx);
 + }
-+ 
++
 ++static irqreturn_t bgx_intr_handler(int irq, void *data)
 ++{
 ++	struct bgx *bgx = (struct bgx *)data;
@@ -21175,7 +21174,7 @@ index 00000000..ef7aef3a
 +@@ -1414,6 +1462,8 @@ static int bgx_probe(struct pci_dev *pde
 + 		xcv_init_hw(bgx->phy_mode);
 + 	bgx_init_hw(bgx);
-+ 
++
 ++	bgx_register_intr(pdev);
 ++
 + 	/* Enable all LMACs */
@@ -21190,7 +21189,7 @@ index 00000000..ef7aef3a
 ++		bgx_reg_modify(bgx, lmac, BGX_GMP_GMI_TXX_INT_ENA_W1S,
 ++			       GMI_TXX_INT_UNDFLW);
 + 	}
-+ 
++
 + 	return 0;
 +--- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
 ++++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.h
@@ -21207,7 +21206,7 @@ index 00000000..ef7aef3a
 ++#define  GMI_TXX_INT_XSDEF			BIT_ULL(2)
 ++#define  GMI_TXX_INT_XSCOL			BIT_ULL(1)
 ++#define  GMI_TXX_INT_UNDFLW			BIT_ULL(0)
-+ 
++
 + #define BGX_MSIX_VEC_0_29_ADDR		0x400000 /* +(0..29) << 4 */
 + #define BGX_MSIX_VEC_0_29_CTL		0x400008
 diff --git a/target/linux/rockchip-rk3399/profiles/00-default.mk b/target/linux/rockchip-rk3399/profiles/00-default.mk
@@ -21347,7 +21346,7 @@ index 00000000..4b010058
 +    for i in $(seq 0 ${OL_NUM}); do
 +        local temp=`cat ${TEMP_FILE}`
 +        if [ -e /sys/devices/system/cpu/cpu${i}/online ]; then
-+            let online=`cat /sys/devices/system/cpu/cpu${i}/online` 
++            let online=`cat /sys/devices/system/cpu/cpu${i}/online`
 +        else
 +            let online=1
 +        fi
@@ -21369,7 +21368,7 @@ index 00000000..4b010058
 +    if [ ! -e "${1}/name" ]; then
 +        return
 +    fi
-+    
++
 +    local n=`cat ${1}/name`
 +    echo "Current voltage(uV, ${n}):"
 +    echo -e "\t"`cat ${1}/microvolts`"uV"
@@ -21377,7 +21376,7 @@ index 00000000..4b010058
 +
 +function find_regulator()
 +{
-+    for file in /sys/class/regulator/*; do 
++    for file in /sys/class/regulator/*; do
 +        n=`cat ${file}/name`
 +        if [ "x${n}" = "x${1}" ]; then
 +            echo ${file}
