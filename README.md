@@ -14,7 +14,9 @@
 * 开启了 [full cone nat](https://github.com/Chion82/netfilter-full-cone-nat)
 * 默认支持 IPv6
 * 编译时自动使用最新 lean 的源码
-* 使用内核态的 samba， 性能更高(感谢 [lean 的源码](https://github.com/coolsnowwolf/lede/issues/3135))
+* 使用 [cifsd](https://github.com/namjaejeon/cifsd)(内核态的 samba)，性能更高。
+
+再次感谢 [lean 的源码](https://github.com/coolsnowwolf/lede)
 
 ## 用法
 1. Fork 到自己的账号下
