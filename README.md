@@ -19,12 +19,15 @@
 1. Fork 到自己的账号下
 2. 进入 Actions 界面，启用 Github Actions
 3. 在 `config_rk3328` 文件中，自定义所需要的软件包
-    cifsd 与 samba 有冲突，只能二选一。
-    比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
+    - 比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
 
 ## 注意
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/friendlywrt-nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
+
 产品发布初期，官方代码每天都在变，遇到无法编译时，请过来查看 `.yml` 与 `config` 最新异动。
+
+cifsd 与 samba 有冲突，只能二选一。
+
 
 ## 参考
 * [使用Github的Actions功能在线编译NanoPi-R1S固件（包含H5和H3）](https://totoro.site/index.php/archives/70/)
