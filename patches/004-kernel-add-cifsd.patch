@@ -1,12 +1,11 @@
 diff --git a/arch/arm64/configs/nanopi-r2_linux_defconfig b/arch/arm64/configs/nanopi-r2_linux_defconfig
-index 240a9bf57..27b13f21e 100644
+index 240a9bf57..a8de3f7e7 100644
 --- a/arch/arm64/configs/nanopi-r2_linux_defconfig
 +++ b/arch/arm64/configs/nanopi-r2_linux_defconfig
-@@ -1550,6 +1550,10 @@ CONFIG_CIFS_XATTR=y
+@@ -1550,6 +1550,9 @@ CONFIG_CIFS_XATTR=y
  CONFIG_CIFS_POSIX=y
  CONFIG_CIFS_DFS_UPCALL=y
  CONFIG_CIFS_FSCACHE=y
-+CONFIG_CIFS_FSCACHE=y
 +CONFIG_SMB_SERVER=m
 +CONFIG_SMB_INSECURE_SERVER=y
 +CONFIG_SMB_SERVER_SMBDIRECT=y
