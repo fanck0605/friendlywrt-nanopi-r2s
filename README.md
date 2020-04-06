@@ -10,18 +10,17 @@
     - 编译时，自动使用 lean 的最新源码
     - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性
     - 可以支持 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt) 所支持的机型
-* 集成最新实时监控 Netdata，可以查看 NanoPi-R2s 的实时状态
+* 集成最新实时监控 Netdata，方便查看 NanoPi-R2s 的实时状态
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
 * 默认支持 IPv6，可以访问最新 IPv6 规范的互联网。
 * 使用 [cifsd](https://github.com/namjaejeon/cifsd)(内核态的 samba)，性能更高
-
-再次感谢 [lean 的源码](https://github.com/coolsnowwolf/lede)
 
 ## 用法
 1. Fork 到自己的账号下
 2. 进入 Actions 界面，启用 Github Actions
 3. 在 `config_rk3328` 文件中，自定义所需要的软件包
-   比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
+    cifsd 与 samba 有冲突，只能二选一。
+    比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
 
 ## 注意
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/friendlywrt-nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
