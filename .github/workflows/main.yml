@@ -64,6 +64,7 @@ jobs:
           cd friendlywrt-rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
+          git clone https://github.com/namjaejeon/cifsd fs/cifsd
           git apply ../../patches/004-kernel-add-cifsd.patch
 
       - name: Customize Configuration Files
