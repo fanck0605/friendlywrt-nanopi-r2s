@@ -63,6 +63,7 @@ jobs:
         run: |
           cd friendlywrt-rk3328/kernel/
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
+          git apply ../../patches/004-kernel-add-cifsd.patch
 
       - name: Customize Configuration Files
         run: |
