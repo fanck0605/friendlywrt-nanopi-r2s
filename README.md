@@ -14,7 +14,7 @@
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
 * 默认支持 IPv6，可以访问最新 IPv6 规范的互联网。
     - 需要关闭 *网络* -> *DHCP/DNS* -> *高级设置* -> *禁止解析 IPv6 DNS 记录*
-* wan lan 口互换，lan 口是原生千兆网卡，更加稳定
+* wan 和 lan 互换，lan 口是原生千兆网卡，更加稳定
 
 ## 用法
 1. Fork 到自己的账号下
