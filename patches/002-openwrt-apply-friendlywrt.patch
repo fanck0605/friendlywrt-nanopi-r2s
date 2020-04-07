@@ -1,15 +1,3 @@
-diff --git a/.gitignore b/.gitignore
-index 0908c0fd..029180a2 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -3,6 +3,7 @@
- .*.swp
- /env
- /dl
-+/dl-*
- /.config
- /.config.old
- /bin
 diff --git a/friendlyelec/.gitignore b/friendlyelec/.gitignore
 new file mode 100644
 index 00000000..1c37a4d2
