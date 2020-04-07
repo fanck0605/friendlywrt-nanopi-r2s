@@ -13,6 +13,7 @@
 * 集成最新实时监控 Netdata，方便查看 NanoPi-R2s 的实时状态
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
 * 默认支持 IPv6，可以访问最新 IPv6 规范的互联网。
+    - 需要关闭 *网络* -> *DHCP/DNS* -> *高级设置* -> *禁止解析 IPv6 DNS 记录*
 * wan lan 口互换，lan 口是原生千兆网卡，更加稳定
 
 ## 用法
