@@ -8,7 +8,7 @@
 ## 特色
 * 使用 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede)，并 merge 了 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
     - 编译时，自动使用 lean 的最新源码
-    - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性
+    - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性（由于固件限制，一些内核相关的功能可能无法启用）
     - 可以支持 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt) 所支持的机型
 * 集成最新实时监控 Netdata，方便查看 NanoPi-R2s 的实时状态
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
