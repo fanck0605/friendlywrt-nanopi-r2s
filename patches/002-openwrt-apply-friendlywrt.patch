@@ -1,3 +1,15 @@
+diff --git a/.gitignore b/.gitignore
+index 0908c0fd..029180a2 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -3,6 +3,7 @@
+ .*.swp
+ /env
+ /dl
++/dl-*
+ /.config
+ /.config.old
+ /bin
 diff --git a/friendlyelec/.gitignore b/friendlyelec/.gitignore
 new file mode 100644
 index 00000000..1c37a4d2
@@ -9,7 +21,7 @@ index 00000000..1c37a4d2
 +1.sh
 diff --git a/friendlyelec/build.sh b/friendlyelec/build.sh
 new file mode 100755
-index 00000000..64025682
+index 00000000..8c32d4b2
 --- /dev/null
 +++ b/friendlyelec/build.sh
 @@ -0,0 +1,63 @@
@@ -372,7 +384,7 @@ index 8341e4f4..fd494155 100644
 -DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr
 +DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr ipv6helper
  DEFAULT_PACKAGES.bootloader:=
-
+ 
  ifneq ($(DUMP),)
 diff --git a/package/base-files/files/bin/config_generate b/package/base-files/files/bin/config_generate
 index ea04d17d..9bee79aa 100755
@@ -386,7 +398,7 @@ index ea04d17d..9bee79aa 100755
 +				lan) ipad=${ipaddr:-"192.168.2.1"} ;;
  				*) ipad=${ipaddr:-"192.168.$((addr_offset++)).1"} ;;
  			esac
-
+ 
 diff --git a/package/base-files/files/etc/.gitignore b/package/base-files/files/etc/.gitignore
 new file mode 100644
 index 00000000..577f99e9
@@ -396,7 +408,7 @@ index 00000000..577f99e9
 +/rom-version
 diff --git a/package/base-files/files/etc/enable-swap.sh b/package/base-files/files/etc/enable-swap.sh
 new file mode 100755
-index 00000000..f782d847
+index 00000000..76dc2b06
 --- /dev/null
 +++ b/package/base-files/files/etc/enable-swap.sh
 @@ -0,0 +1,50 @@
@@ -480,7 +492,7 @@ index 00000000..92f2b7dc
 +exit 0
 diff --git a/package/base-files/files/etc/hotplug.d/usb/30-usb_wifi_huawei b/package/base-files/files/etc/hotplug.d/usb/30-usb_wifi_huawei
 new file mode 100755
-index 00000000..60b82a6f
+index 00000000..964795f3
 --- /dev/null
 +++ b/package/base-files/files/etc/hotplug.d/usb/30-usb_wifi_huawei
 @@ -0,0 +1,42 @@
@@ -528,7 +540,7 @@ index 00000000..60b82a6f
 +fi
 diff --git a/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi b/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi
 new file mode 100755
-index 00000000..3aecad3d
+index 00000000..54a65c4d
 --- /dev/null
 +++ b/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi
 @@ -0,0 +1,69 @@
@@ -603,7 +615,7 @@ index 00000000..3aecad3d
 +fi
 diff --git a/package/base-files/files/etc/init.d/fa-wifiap b/package/base-files/files/etc/init.d/fa-wifiap
 new file mode 100755
-index 00000000..20f226f0
+index 00000000..0f7598f0
 --- /dev/null
 +++ b/package/base-files/files/etc/init.d/fa-wifiap
 @@ -0,0 +1,13 @@
@@ -670,7 +682,7 @@ index 56394773..a07d8a48 100644
 @@ -1,4 +1,14 @@
  # Put your custom commands here that should be executed once
  # the system init finished. By default this file does nothing.
-
+ 
 +/usr/bin/lcd2usb_echo &
 +
 +board=$(cat /tmp/sysinfo/board_name | cut -d , -f2)
@@ -694,7 +706,7 @@ index ae04212f..b1e104db 100644
 +net.bridge.bridge-nf-call-iptables=1
 diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
 new file mode 100755
-index 00000000..9924fba1
+index 00000000..fd21e50e
 --- /dev/null
 +++ b/package/base-files/files/root/setup.sh
 @@ -0,0 +1,129 @@
@@ -829,7 +841,7 @@ index 00000000..9924fba1
 +logger "done"
 diff --git a/package/base-files/files/usr/bin/fix_wifi_ap.sh b/package/base-files/files/usr/bin/fix_wifi_ap.sh
 new file mode 100755
-index 00000000..b7637417
+index 00000000..8ddc6513
 --- /dev/null
 +++ b/package/base-files/files/usr/bin/fix_wifi_ap.sh
 @@ -0,0 +1,43 @@
@@ -11600,9 +11612,9 @@ index 08e9ee96..56a0f48e 100644
 --- a/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
 +++ b/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
 @@ -497,8 +497,12 @@ mac80211_prepare_vif() {
-
+ 
  	json_get_vars ifname mode ssid wds powersave macaddr enable
-
+ 
 -	[ -n "$ifname" ] || ifname="wlan${phy#phy}${if_idx:+-$if_idx}"
 +	#[ -n "$ifname" ] || ifname="wlan${phy#phy}${if_idx:+-$if_idx}"
 +	if [ -z "$ifname" ]; then
@@ -11610,7 +11622,7 @@ index 08e9ee96..56a0f48e 100644
 +	fi
  	if_idx=$((${if_idx:-0} + 1))
 +	logger "mac80211.sh->mac80211_prepare_vif phy=$phy ifname=$ifname"
-
+ 
  	set_default wds 0
  	set_default powersave 0
 @@ -816,7 +820,7 @@ mac80211_vap_cleanup() {
@@ -11621,20 +11633,20 @@ index 08e9ee96..56a0f48e 100644
 +		#iw dev "$wdev" del
  	done
  }
-
+ 
 diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
 index 11216e97..e5eb3ea1 100755
 --- a/package/lean/default-settings/files/zzz-default-settings
 +++ b/package/lean/default-settings/files/zzz-default-settings
 @@ -29,12 +29,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
-
+ 
  ln -sf /sbin/ip /usr/bin/ip
-
+ 
 -sed -i 's/downloads.openwrt.org/openwrt.proxy.ustclug.org/g' /etc/opkg/distfeeds.conf
 +sed -i 's/downloads.openwrt.org/mirrors.tuna.tsinghua.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
  sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
  sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
-
+ 
 -sed -i "s/# //g" /etc/opkg/distfeeds.conf
 -
  sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
@@ -11647,10 +11659,10 @@ index e2f26615..4b07ecd9 100644
 @@ -340,7 +340,6 @@ define Build/Configure
  	)
  endef
-
+ 
 -TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections
  TARGET_LDFLAGS += -Wl,--gc-sections
-
+ 
  define Build/Compile
 @@ -348,7 +347,7 @@ define Build/Compile
  		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -11661,19 +11673,6 @@ index e2f26615..4b07ecd9 100644
  		$(OPENSSL_MAKEFLAGS) \
  		all
  	$(MAKE) -C $(PKG_BUILD_DIR) \
-diff --git a/package/network/services/dnsmasq/files/dhcp.conf b/package/network/services/dnsmasq/files/dhcp.conf
-index e8284d6c..60477ed2 100644
---- a/package/network/services/dnsmasq/files/dhcp.conf
-+++ b/package/network/services/dnsmasq/files/dhcp.conf
-@@ -20,7 +20,7 @@ config dnsmasq
- 	#list notinterface	lo
- 	#list bogusnxdomain     '64.94.110.11'
- 	option localservice	1  # disable to allow DNS requests from non-local subnets
--	option filter_aaaa 1
-+	option filter_aaaa	0
-
- config dhcp lan
- 	option interface	lan
 diff --git a/package/utils/usbmode/Makefile b/package/utils/usbmode/Makefile
 index f3e46ec0..ea668048 100644
 --- a/package/utils/usbmode/Makefile
@@ -11690,7 +11689,7 @@ index f3e46ec0..ea668048 100644
  endef
 diff --git a/package/utils/usbmode/files/usb-mode.json b/package/utils/usbmode/files/usb-mode.json
 new file mode 100644
-index 00000000..4e63ec57
+index 00000000..8db5b034
 --- /dev/null
 +++ b/package/utils/usbmode/files/usb-mode.json
 @@ -0,0 +1,3144 @@
@@ -15301,7 +15300,7 @@ index 00000000..10412c51
 +}
 diff --git a/target/linux/allwinner-h5/base-files/usr/bin/cpu_freq b/target/linux/allwinner-h5/base-files/usr/bin/cpu_freq
 new file mode 100755
-index 00000000..4b010058
+index 00000000..5f0be25a
 --- /dev/null
 +++ b/target/linux/allwinner-h5/base-files/usr/bin/cpu_freq
 @@ -0,0 +1,120 @@
@@ -16007,7 +16006,7 @@ index 00000000..203f0ea5
 +$(eval $(call BuildImage))
 diff --git a/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch b/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 new file mode 100644
-index 00000000..efd13da5
+index 00000000..95b4265b
 --- /dev/null
 +++ b/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 @@ -0,0 +1,139 @@
@@ -16152,7 +16151,7 @@ index 00000000..efd13da5
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
-index 00000000..ef7aef3a
+index 00000000..812ebda8
 --- /dev/null
 +++ b/target/linux/allwinner-h5/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 @@ -0,0 +1,110 @@
@@ -17601,7 +17600,7 @@ index 00000000..09543912
 + };
 diff --git a/target/linux/nexell-s5p4418/patches-4.14/200-disable-msi.patch b/target/linux/nexell-s5p4418/patches-4.14/200-disable-msi.patch
 new file mode 100644
-index 00000000..9de7eeee
+index 00000000..81b2531e
 --- /dev/null
 +++ b/target/linux/nexell-s5p4418/patches-4.14/200-disable-msi.patch
 @@ -0,0 +1,18 @@
@@ -17625,7 +17624,7 @@ index 00000000..9de7eeee
 +
 diff --git a/target/linux/nexell-s5p4418/patches-4.14/301-apalis-ixora-dts-leds.patch b/target/linux/nexell-s5p4418/patches-4.14/301-apalis-ixora-dts-leds.patch
 new file mode 100644
-index 00000000..acec1e8e
+index 00000000..fada3863
 --- /dev/null
 +++ b/target/linux/nexell-s5p4418/patches-4.14/301-apalis-ixora-dts-leds.patch
 @@ -0,0 +1,86 @@
@@ -17717,7 +17716,7 @@ index 00000000..acec1e8e
 + 		};
 diff --git a/target/linux/nexell-s5p4418/patches-4.14/302-apalis-ixora-dts-reset-button.patch b/target/linux/nexell-s5p4418/patches-4.14/302-apalis-ixora-dts-reset-button.patch
 new file mode 100644
-index 00000000..ede872fb
+index 00000000..2a6b1968
 --- /dev/null
 +++ b/target/linux/nexell-s5p4418/patches-4.14/302-apalis-ixora-dts-reset-button.patch
 @@ -0,0 +1,76 @@
@@ -17816,7 +17815,7 @@ index 00000000..caf2d2a3
 + };
 diff --git a/target/linux/nexell-s5p4418/patches-4.19/301-apalis-ixora-dts-leds.patch b/target/linux/nexell-s5p4418/patches-4.19/301-apalis-ixora-dts-leds.patch
 new file mode 100644
-index 00000000..bae9df17
+index 00000000..773e035a
 --- /dev/null
 +++ b/target/linux/nexell-s5p4418/patches-4.19/301-apalis-ixora-dts-leds.patch
 @@ -0,0 +1,86 @@
@@ -17908,7 +17907,7 @@ index 00000000..bae9df17
 + 		};
 diff --git a/target/linux/nexell-s5p4418/patches-4.19/302-apalis-ixora-dts-reset-button.patch b/target/linux/nexell-s5p4418/patches-4.19/302-apalis-ixora-dts-reset-button.patch
 new file mode 100644
-index 00000000..da9de296
+index 00000000..6e238d3d
 --- /dev/null
 +++ b/target/linux/nexell-s5p4418/patches-4.19/302-apalis-ixora-dts-reset-button.patch
 @@ -0,0 +1,76 @@
@@ -18069,7 +18068,7 @@ index 00000000..6a22098d
 +exit 0
 diff --git a/target/linux/nexell-s5p6818/base-files/etc/board.d/02_network b/target/linux/nexell-s5p6818/base-files/etc/board.d/02_network
 new file mode 100755
-index 00000000..198bc379
+index 00000000..c9736d59
 --- /dev/null
 +++ b/target/linux/nexell-s5p6818/base-files/etc/board.d/02_network
 @@ -0,0 +1,26 @@
@@ -18698,7 +18697,7 @@ index 00000000..203f0ea5
 +$(eval $(call BuildImage))
 diff --git a/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch b/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 new file mode 100644
-index 00000000..efd13da5
+index 00000000..95b4265b
 --- /dev/null
 +++ b/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 @@ -0,0 +1,139 @@
@@ -18843,7 +18842,7 @@ index 00000000..efd13da5
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
-index 00000000..ef7aef3a
+index 00000000..812ebda8
 --- /dev/null
 +++ b/target/linux/nexell-s5p6818/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 @@ -0,0 +1,110 @@
@@ -19092,7 +19091,7 @@ index 00000000..5eb25c65
 +exit 0
 diff --git a/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-led b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-led
 new file mode 100755
-index 00000000..f69b1cbe
+index 00000000..bf3eebfd
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-led
 @@ -0,0 +1,15 @@
@@ -19113,7 +19112,7 @@ index 00000000..f69b1cbe
 +
 diff --git a/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-misc b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-misc
 new file mode 100755
-index 00000000..af44f78a
+index 00000000..415cd411
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-misc
 @@ -0,0 +1,9 @@
@@ -19128,7 +19127,7 @@ index 00000000..af44f78a
 +
 diff --git a/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-pwmfan b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-pwmfan
 new file mode 100755
-index 00000000..dd07aa13
+index 00000000..1d2f16f5
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/base-files/etc/init.d/fa-rk3328-pwmfan
 @@ -0,0 +1,9 @@
@@ -19216,7 +19215,7 @@ index 00000000..963a4fad
 +done
 diff --git a/target/linux/rockchip-rk3328/base-files/usr/bin/start-rk3328-pwm-fan.sh b/target/linux/rockchip-rk3328/base-files/usr/bin/start-rk3328-pwm-fan.sh
 new file mode 100755
-index 00000000..7b205843
+index 00000000..abd88b95
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/base-files/usr/bin/start-rk3328-pwm-fan.sh
 @@ -0,0 +1,64 @@
@@ -19865,7 +19864,7 @@ index 00000000..203f0ea5
 +$(eval $(call BuildImage))
 diff --git a/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch b/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 new file mode 100644
-index 00000000..efd13da5
+index 00000000..95b4265b
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 @@ -0,0 +1,139 @@
@@ -20010,7 +20009,7 @@ index 00000000..efd13da5
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
-index 00000000..ef7aef3a
+index 00000000..812ebda8
 --- /dev/null
 +++ b/target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 @@ -0,0 +1,110 @@
@@ -20261,7 +20260,7 @@ index 00000000..ae462b10
 +exit 0
 diff --git a/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan b/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
 new file mode 100755
-index 00000000..84c019d1
+index 00000000..166aef21
 --- /dev/null
 +++ b/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
 @@ -0,0 +1,9 @@
@@ -20302,7 +20301,7 @@ index 00000000..bf647625
 \ No newline at end of file
 diff --git a/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh b/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
 new file mode 100755
-index 00000000..7a6782b3
+index 00000000..0a8ca03f
 --- /dev/null
 +++ b/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
 @@ -0,0 +1,63 @@
@@ -20950,7 +20949,7 @@ index 00000000..203f0ea5
 +$(eval $(call BuildImage))
 diff --git a/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch b/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 new file mode 100644
-index 00000000..efd13da5
+index 00000000..95b4265b
 --- /dev/null
 +++ b/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-add-support-for-rgmii-internal-delay-mo.patch
 @@ -0,0 +1,139 @@
@@ -21095,7 +21094,7 @@ index 00000000..efd13da5
 + 	/* Enable compensation controller and force the
 diff --git a/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch b/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 new file mode 100644
-index 00000000..ef7aef3a
+index 00000000..812ebda8
 --- /dev/null
 +++ b/target/linux/rockchip-rk3399/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch
 @@ -0,0 +1,110 @@
@@ -21298,7 +21297,7 @@ index 984d5b3b..67a93b93 100755
  	;;
 diff --git a/target/linux/sunxi/base-files/usr/bin/cpu_freq b/target/linux/sunxi/base-files/usr/bin/cpu_freq
 new file mode 100755
-index 00000000..4b010058
+index 00000000..5f0be25a
 --- /dev/null
 +++ b/target/linux/sunxi/base-files/usr/bin/cpu_freq
 @@ -0,0 +1,120 @@
