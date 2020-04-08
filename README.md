@@ -1,5 +1,8 @@
 # 使用 Github Actions 在线编译 NanoPi-R2S 固件
 
+## 预编译的版本
+https://github.com/fanck0605/nanopi_r2s/releases
+
 ## 说明
 * ipv4: 192.168.2.1
 * username: root
