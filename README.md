@@ -29,6 +29,7 @@ https://github.com/fanck0605/nanopi_r2s/releases
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
 
 已经合并 friendlyelec 修改的 Lean's LEDE: [fanck0605/friendlywrt](https://github.com/fanck0605/friendlywrt)
+ - 这个版本加入了我自己的一些配置，如需去除，请使用 git reset --hard 47718786db7d57f4eed372fe537e83b4719c62d4
 
 产品发布初期，官方代码每天都在变，遇到无法编译时，请过来查看 `.yml` 与 `config` 最新异动。
 
