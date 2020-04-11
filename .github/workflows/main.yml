@@ -45,15 +45,15 @@ jobs:
 
       - name: Initialization Source
         run: |
-          rm -rf friendlywrt-rk3328
-          mkdir friendlywrt-rk3328
-          cd friendlywrt-rk3328
+          rm -rf rk3328
+          mkdir rk3328
+          cd rk3328
           repo init -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v19.07.1 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
           repo sync -c --no-clone-bundle -j8
 
       - name: Install lean's openwrt
         run: |
-          cd friendlywrt-rk3328
+          cd rk3328
           rm -rf friendlywrt
           git clone https://github.com/coolsnowwolf/lede friendlywrt
           cd friendlywrt
@@ -61,39 +61,39 @@ jobs:
 
       - name: Upgrade Argon Theme
         run: |
-          cd friendlywrt-rk3328/friendlywrt/package/lean
+          cd rk3328/friendlywrt/package/lean
           rm -rf luci-theme-argon
           git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 
       - name: Patch Kernel
         run: |
-          cd friendlywrt-rk3328/kernel/
+          cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
 
       - name: Customize Configuration Files
         run: |
-          cp config_rk3328 friendlywrt-rk3328/configs/config_rk3328
+          cp config_rk3328 rk3328/configs/config_rk3328
 
       - name: Swap wan and lan
         run: |
-          cd friendlywrt-rk3328/friendlywrt
+          cd rk3328/friendlywrt
           git apply ../../patches/003-openwrt-swap-wan-and-lan.patch
 
       - name: Build FriendlyWrt
         run: |
-          cd friendlywrt-rk3328
+          cd rk3328
           ./build.sh nanopi_r2s.mk
 
       # clean compile files, release disk space
 #      - name: Clean compile files
 #        run: |
-#          cd friendlywrt-rk3328
+#          cd rk3328
 #          rm -rf `ls | grep -v "out"`
 
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
-          sudo losetup -o 100663296 /dev/loop99 friendlywrt-rk3328/out/*.img
+          sudo losetup -o 100663296 /dev/loop99 rk3328/out/*.img
           sudo rm -rf /mnt/friendlywrt-tmp
           sudo mkdir -p /mnt/friendlywrt-tmp
           sudo mount /dev/loop99 /mnt/friendlywrt-tmp
@@ -105,12 +105,12 @@ jobs:
         run: |
           rm -rf ./artifact/
           mkdir -p ./artifact/
-          gzip friendlywrt-rk3328/out/*.img
-          cp friendlywrt-rk3328/out/*.img* ./artifact/
+          gzip rk3328/out/*.img
+          cp rk3328/out/*.img* ./artifact/
 
       - name: Save Configurations
         run: |
-          cd friendlywrt-rk3328/friendlywrt
+          cd rk3328/friendlywrt
           ./scripts/diffconfig.sh > ../../artifact/config-lite
           cp .config ../../artifact/config-full
 
