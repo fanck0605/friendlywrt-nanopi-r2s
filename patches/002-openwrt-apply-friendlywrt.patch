@@ -694,10 +694,10 @@ index ae04212f..b1e104db 100644
 +net.bridge.bridge-nf-call-iptables=1
 diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
 new file mode 100755
-index 00000000..fd21e50e
+index 00000000..da71b4f5
 --- /dev/null
 +++ b/package/base-files/files/root/setup.sh
-@@ -0,0 +1,129 @@
+@@ -0,0 +1,123 @@
 +#!/bin/sh
 +
 +# THIS SCIPRT ONLY RUN ONCE. Base on /etc/firstboot_${board}
@@ -819,12 +819,6 @@ index 00000000..fd21e50e
 +
 +# fix netdata issue
 +[ -d /usr/share/netdata/web ] && chown -R root:root /usr/share/netdata/web
-+
-+# disable lan ipv6
-+#uci set 'network.lan.ipv6=off'
-+#uci set 'dhcp.lan.dhcpv6=disabled'
-+#/etc/init.d/odhcpd disable
-+#uci commit
 +
 +logger "done"
 diff --git a/package/base-files/files/usr/bin/fix_wifi_ap.sh b/package/base-files/files/usr/bin/fix_wifi_ap.sh
@@ -11623,7 +11617,7 @@ index 08e9ee96..56a0f48e 100644
  }
  
 diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
-index 11216e97..e5eb3ea1 100755
+index edd79465..b5838b64 100755
 --- a/package/lean/default-settings/files/zzz-default-settings
 +++ b/package/lean/default-settings/files/zzz-default-settings
 @@ -29,12 +29,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
