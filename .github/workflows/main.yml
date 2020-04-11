@@ -73,6 +73,7 @@ jobs:
 
       - name: Customize Configuration Files
         run: |
+          rm -f rk3328/device/friendlyelec/rk3328/common-files/etc/distfeeds.conf
           cp config_rk3328 rk3328/configs/config_rk3328
 
       - name: Swap wan and lan
