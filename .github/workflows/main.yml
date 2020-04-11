@@ -59,6 +59,12 @@ jobs:
           cd friendlywrt
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
 
+      - name: Upgrade Argon Theme
+        run: |
+          cd friendlywrt-rk3328/friendlywrt/package/lean
+          rm -rf luci-theme-argon
+          git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
+
       - name: Patch Kernel
         run: |
           cd friendlywrt-rk3328/kernel/
