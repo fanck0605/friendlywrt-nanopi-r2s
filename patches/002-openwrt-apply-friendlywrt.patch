@@ -11617,10 +11617,20 @@ index 08e9ee96..56a0f48e 100644
  }
  
 diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
-index edd79465..b5838b64 100755
+index edd79465..03b4471f 100755
 --- a/package/lean/default-settings/files/zzz-default-settings
 +++ b/package/lean/default-settings/files/zzz-default-settings
-@@ -29,12 +29,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
+@@ -7,9 +7,6 @@ uci set system.@system[0].timezone=CST-8
+ uci set system.@system[0].zonename=Asia/Shanghai
+ uci commit system
+ 
+-uci set fstab.@global[0].anon_mount=1
+-uci commit fstab
+-
+ rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
+@@ -29,12 +26,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
  
  ln -sf /sbin/ip /usr/bin/ip
  
