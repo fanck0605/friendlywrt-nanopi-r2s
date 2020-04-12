@@ -351,29 +351,6 @@ index 9637424c..310b0038 100644
    $(strip $(if $(CONFIG_PER_FEED_REPO), \
  	echo 'src/gz %d_base %U/packages/%A/base'; \
  	$(foreach feed,$(FEEDS_AVAILABLE), \
-diff --git a/include/target.mk b/include/target.mk
-index 8341e4f4..fd494155 100644
---- a/include/target.mk
-+++ b/include/target.mk
-@@ -15,15 +15,13 @@ DEVICE_TYPE?=router
- # Default packages - the really basic set
- DEFAULT_PACKAGES:=base-files libc libgcc busybox dropbear mtd uci opkg netifd fstools uclient-fetch logd urandom-seed urngd \
- block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw wget libustream-openssl ca-certificates \
--default-settings luci luci-app-ddns luci-app-upnp luci-app-adbyby-plus luci-app-autoreboot \
--luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus luci-app-unblockmusic \
--luci-app-arpbind luci-app-vlmcsd luci-app-wol luci-app-ramfree \
--luci-app-sfe luci-app-flowoffload luci-app-nlbwmon luci-app-accesscontrol luci-app-cpufreq \
-+default-settings luci luci-app-ddns luci-app-upnp luci-app-autoreboot \
-+luci-app-vsftpd luci-app-ssr-plus luci-app-arpbind luci-app-wol \
- ddns-scripts_aliyun ddns-scripts_dnspod
- # For nas targets
- DEFAULT_PACKAGES.nas:=block-mount fdisk lsblk mdadm
- # For router targets
--DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr
-+DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr ipv6helper
- DEFAULT_PACKAGES.bootloader:=
- 
- ifneq ($(DUMP),)
 diff --git a/package/base-files/files/bin/config_generate b/package/base-files/files/bin/config_generate
 index ea04d17d..9bee79aa 100755
 --- a/package/base-files/files/bin/config_generate
@@ -11616,34 +11593,6 @@ index 08e9ee96..56a0f48e 100644
  	done
  }
  
-diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
-index edd79465..03b4471f 100755
---- a/package/lean/default-settings/files/zzz-default-settings
-+++ b/package/lean/default-settings/files/zzz-default-settings
-@@ -7,9 +7,6 @@ uci set system.@system[0].timezone=CST-8
- uci set system.@system[0].zonename=Asia/Shanghai
- uci commit system
- 
--uci set fstab.@global[0].anon_mount=1
--uci commit fstab
--
- rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
- rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
- rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
-@@ -29,12 +26,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
- 
- ln -sf /sbin/ip /usr/bin/ip
- 
--sed -i 's/downloads.openwrt.org/openwrt.proxy.ustclug.org/g' /etc/opkg/distfeeds.conf
-+sed -i 's/downloads.openwrt.org/mirrors.tuna.tsinghua.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
- sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
- sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
- 
--sed -i "s/# //g" /etc/opkg/distfeeds.conf
--
- sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
- echo "iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
- echo "iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
 diff --git a/package/libs/openssl/Makefile b/package/libs/openssl/Makefile
 index e2f26615..4b07ecd9 100644
 --- a/package/libs/openssl/Makefile

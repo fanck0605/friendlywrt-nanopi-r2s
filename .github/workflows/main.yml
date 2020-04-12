@@ -58,6 +58,7 @@ jobs:
           git clone https://github.com/coolsnowwolf/lede friendlywrt
           cd friendlywrt
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
+          git apply ../../patches/005-openwrt-personal-modification.patch
 
       - name: Upgrade Argon Theme
         run: |
