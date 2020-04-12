@@ -9,7 +9,7 @@ on:
       - 'patches/**'
       - 'config_rk3328'
   schedule:
-    - cron: '09 08 * * *'
+    - cron: '00 18 * * *'
 
 jobs:
 
@@ -20,7 +20,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           ref: lean
 
@@ -58,6 +58,10 @@ jobs:
           git clone https://github.com/coolsnowwolf/lede friendlywrt
           cd friendlywrt
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
+
+      - name: Apply chuck's modification
+        run: |
+          cd rk3328/friendlywrt
           git apply ../../patches/005-openwrt-personal-modification.patch
 
       - name: Upgrade Argon Theme
