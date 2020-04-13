@@ -85,12 +85,6 @@ jobs:
           cd rk3328
           ./build.sh nanopi_r2s.mk
 
-      # clean compile files, release disk space
-#      - name: Clean compile files
-#        run: |
-#          cd rk3328
-#          rm -rf `ls | grep -v "out"`
-
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
           sudo losetup -o 100663296 /dev/loop99 rk3328/out/*.img
