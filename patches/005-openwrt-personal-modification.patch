@@ -21,6 +21,29 @@ index 8341e4f4..fd494155 100644
  DEFAULT_PACKAGES.bootloader:=
  
  ifneq ($(DUMP),)
+diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
+index da71b4f5..3758d97d 100755
+--- a/package/base-files/files/root/setup.sh
++++ b/package/base-files/files/root/setup.sh
+@@ -120,4 +120,18 @@ fi
+ # fix netdata issue
+ [ -d /usr/share/netdata/web ] && chown -R root:root /usr/share/netdata/web
+ 
++if [ -d /www/luci-static/argon ]; then
++    # set theme
++    uci set luci.main.mediaurlbase='/luci-static/argon'
++    uci commit luci
++fi
++
++uci get upnpd > /dev/null
++if [ $? -eq 0 ]; then
++    uci set upnpd.config.enabled=1
++    uci set upnpd.config.download=20480
++    uci set upnpd.config.upload=2048
++    uci commit upnpd
++fi
++
+ logger "done"
 diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
 index edd79465..03b4471f 100755
 --- a/package/lean/default-settings/files/zzz-default-settings
@@ -49,3 +72,17 @@ index edd79465..03b4471f 100755
  sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
  echo "iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
  echo "iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
+diff --git a/package/network/services/samba36/files/smb.conf.template b/package/network/services/samba36/files/smb.conf.template
+index fb82732d..7e6fab75 100644
+--- a/package/network/services/samba36/files/smb.conf.template
++++ b/package/network/services/samba36/files/smb.conf.template
+@@ -8,7 +8,8 @@
+ 	bind interfaces only = yes
+ 	deadtime = 30
+ 	enable core files = no
+-	invalid users = root
++	guest account = root
++#	invalid users = root
+ 	local master = yes
+ 	map to guest = Bad User
+ 	max protocol = SMB2
