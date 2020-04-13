@@ -55,14 +55,7 @@ jobs:
         run: |
           cd rk3328
           rm -rf friendlywrt
-          git clone https://github.com/coolsnowwolf/lede friendlywrt
-          cd friendlywrt
-          git apply ../../patches/002-openwrt-apply-friendlywrt.patch
-
-      - name: Apply chuck's modification
-        run: |
-          cd rk3328/friendlywrt
-          git apply ../../patches/005-openwrt-personal-modification.patch
+          git clone https://github.com/fanck0605/friendlywrt.git friendlywrt
 
       - name: Upgrade Argon Theme
         run: |
