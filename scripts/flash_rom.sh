@@ -94,6 +94,14 @@ fi
 while :; do
     if [ $have_zstd = false ] || [ $have_losetup = false ]; then
         echo -e "\e[91m未安装 zstd 或 losetup, 无法保留配置!\e[0m"
+        echo -e "\e[92m是否继续刷写固件(Press N/n to exit): \e[0m\c"
+        read input
+        case ${input:0:1} in
+        n | N)
+            exit 0
+            ;;
+        *) ;;
+        esac
         save_conf=false
         break
     fi
