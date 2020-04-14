@@ -35,6 +35,28 @@ flash_rom() {
     echo b >/proc/sysrq-trigger
 }
 
+choose_yn() {
+    while :; do
+        read input
+        case ${input:0:1} in
+        y | Y)
+            return 0
+            ;;
+        n | N)
+            return 1
+            ;;
+        *)
+            echo -e "\e[92mPlease enter y/n: \e[0m\c"
+            ;;
+        esac
+    done
+}
+
+############################
+#                          #
+#     Check Dependence     #
+#                          #
+############################
 pv --version >/dev/null
 if [ $? -ne 0 ]; then
     echo -e "\e[91m未安装 pv!\e[0m"
@@ -91,34 +113,32 @@ else
     exit 3
 fi
 
-while :; do
-    if [ $have_zstd = false ] || [ $have_losetup = false ]; then
-        echo -e "\e[91m未安装 zstd 或 losetup, 无法保留配置!\e[0m"
-        echo -e "\e[92m是否继续刷写固件(Press N/n to exit): \e[0m\c"
-        read input
-        case ${input:0:1} in
-        n | N)
-            exit 0
-            ;;
-        *) ;;
-        esac
+if [ $have_zstd = false ] || [ $have_losetup = false ]; then
+    echo -e "\e[91m未安装 zstd 或 losetup, 无法保留配置!\e[0m"
+    echo -e "\e[92m请选择是否继续刷写固件(y/n): \e[0m\c"
+    choose_yn
+    case $? in
+    0)
         save_conf=false
-        break
-    fi
-    echo -e "\e[92m请选择是否保留配置文件(Y/n): \e[0m\c"
-    read input
-    case ${input:0:1} in
-    y | Y)
-        save_conf=true
-        break
         ;;
-    n | N)
-        save_conf=false
-        break
+    1)
+        exit 0
         ;;
     *) ;;
     esac
-done
+else
+    echo -e "\e[92m请选择是否保留配置文件(y/n): \e[0m\c"
+    choose_yn
+    case $? in
+    0)
+        save_conf=true
+        ;;
+    1)
+        save_conf=false
+        ;;
+    *) ;;
+    esac
+fi
 
 if [ $save_conf = true ]; then
     echo -e '\e[92m正在解压镜像文件...\e[0m'
@@ -137,16 +157,15 @@ if [ $save_conf = true ]; then
     rm -rf /mnt/friendlywrt-tmp
     mkdir -p /mnt/friendlywrt-tmp
 
-    losetup -o 100663296 /dev/loop0 /root/FriendlyWrt.img
-    mount /dev/loop0 /mnt/friendlywrt-tmp
+    lodev=$(losetup -f)
+    losetup -o 100663296 $lodev /root/FriendlyWrt.img
+    mount $lodev /mnt/friendlywrt-tmp
 
-    #cd /mnt/friendlywrt-tmp
-    sysupgrade -b /tmp/back.tar.gz
-    tar zxf /tmp/back.tar.gz -C /mnt/friendlywrt-tmp
-    rm -f /tmp/back.tar.gz
+    sysupgrade -b /tmp/backup.tar.gz
+    tar zxf /tmp/backup.tar.gz -C /mnt/friendlywrt-tmp
     umount /mnt/friendlywrt-tmp
-    losetup -d /dev/loop0
-    echo -e '\e[92m配置文件备份完毕.正在重新打包\e[0m'
+    losetup -d $lodev
+    echo -e '\e[92m配置文件备份完毕, 正在重新打包...\e[0m'
     zstdmt /root/FriendlyWrt.img -o /tmp/FriendlyWrtUpgrade.img.zst
     rom_type="zst"
 else
