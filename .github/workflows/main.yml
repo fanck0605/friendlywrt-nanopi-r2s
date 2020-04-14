@@ -94,13 +94,16 @@ jobs:
 
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
-          sudo losetup -o 100663296 /dev/loop99 rk3328/out/*.img
+          sudo df -lh
+          lodev=$(sudo losetup -f)
+          echo "found unused loop dev $lodev"
+          sudo losetup -o 100663296 $lodev rk3328/out/*.img
           sudo rm -rf /mnt/friendlywrt-tmp
           sudo mkdir -p /mnt/friendlywrt-tmp
-          sudo mount /dev/loop99 /mnt/friendlywrt-tmp
+          sudo mount $lodev /mnt/friendlywrt-tmp
           sudo chown -R root:root /mnt/friendlywrt-tmp
           sudo umount /mnt/friendlywrt-tmp
-          sudo losetup -d /dev/loop99
+          sudo losetup -d $lodev
 
       - name: Assemble Artifact
         run: |
