@@ -1,6 +1,6 @@
 #!/bin/sh
 # Copyright (c) 2020, Chuck <fanck0605@qq.com>
-# Copyright (c) 2020, klever1988 <xx@xx.com>
+# Copyright (c) 2020, klever1988 <56048681+klever1988@users.noreply.github.com>
 #
 #     警告:对着屏幕的哥们,我们允许你使用此脚本，但不允许你抹去作者的信息,请保留这段话。
 #
