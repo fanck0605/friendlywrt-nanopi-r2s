@@ -71,6 +71,15 @@ jobs:
           rm -rf luci-theme-argon
           git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 
+      - name: Install filebrowser
+        run: |
+          rm -rf openwrt
+          git clone -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git --depth=1
+          mkdir -p rk3328/friendlywrt/package/ctcgfw
+          cp -a openwrt/package/ctcgfw/filebrowser rk3328/friendlywrt/package/ctcgfw/
+          cp -a openwrt/package/ctcgfw/luci-app-filebrowser rk3328/friendlywrt/package/ctcgfw/
+          rm -rf openwrt
+
       - name: Patch Kernel
         run: |
           cd rk3328/kernel/
