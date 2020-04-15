@@ -1,4 +1,4 @@
-# 使用 Github Actions 在线编译 NanoPi-R2S 固件
+# 使用 Github Actions 在线编译 NanoPi-R2s 固件
 
 ## 预编译的版本
 https://github.com/fanck0605/nanopi_r2s/releases
@@ -36,10 +36,14 @@ https://github.com/fanck0605/nanopi_r2s/releases
 cifsd 与 samba 有冲突，只能二选一。(cifsd 暂时无法工作)
 ps: 可能是永久
 
+## 特别感谢（本项目的出现离不开以下项目）
+* [soffchen/NanoPi-R2S](https://github.com/soffchen/NanoPi-R2S)
+* [klever1988/nanopi-openwrt](https://github.com/klever1988/nanopi-openwrt)
+* [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede)
+* [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
+
 ## 参考
 * [使用Github的Actions功能在线编译NanoPi-R1S固件（包含H5和H3）](https://totoro.site/index.php/archives/70/)
 * [skytotwo/NanoPi-R1S-Build-By-Actions](https://github.com/skytotwo/NanoPi-R1S-Build-By-Actions)
-* [klever1988/nanopi-openwrt](https://github.com/klever1988/nanopi-openwrt)
 * [yangliu/NanoPi-R2S](https://github.com/yangliu/NanoPi-R2S)
 * [maxming2333/NanoPi-R2S](https://github.com/maxming2333/NanoPi-R2S)
-* [soffchen/NanoPi-R2S](https://github.com/soffchen/NanoPi-R2S)
