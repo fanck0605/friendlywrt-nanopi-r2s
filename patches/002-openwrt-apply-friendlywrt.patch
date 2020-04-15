@@ -351,8 +351,31 @@ index 9637424c..310b0038 100644
    $(strip $(if $(CONFIG_PER_FEED_REPO), \
  	echo 'src/gz %d_base %U/packages/%A/base'; \
  	$(foreach feed,$(FEEDS_AVAILABLE), \
+diff --git a/include/target.mk b/include/target.mk
+index 8341e4f4..fd494155 100644
+--- a/include/target.mk
++++ b/include/target.mk
+@@ -15,15 +15,13 @@ DEVICE_TYPE?=router
+ # Default packages - the really basic set
+ DEFAULT_PACKAGES:=base-files libc libgcc busybox dropbear mtd uci opkg netifd fstools uclient-fetch logd urandom-seed urngd \
+ block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw wget libustream-openssl ca-certificates \
+-default-settings luci luci-app-ddns luci-app-upnp luci-app-adbyby-plus luci-app-autoreboot \
+-luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus luci-app-unblockmusic \
+-luci-app-arpbind luci-app-vlmcsd luci-app-wol luci-app-ramfree \
+-luci-app-sfe luci-app-flowoffload luci-app-nlbwmon luci-app-accesscontrol luci-app-cpufreq \
++default-settings luci luci-app-ddns luci-app-upnp luci-app-autoreboot \
++luci-app-vsftpd luci-app-ssr-plus luci-app-arpbind luci-app-wol \
+ ddns-scripts_aliyun ddns-scripts_dnspod
+ # For nas targets
+ DEFAULT_PACKAGES.nas:=block-mount fdisk lsblk mdadm
+ # For router targets
+-DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr
++DEFAULT_PACKAGES.router:=dnsmasq-full iptables ppp ppp-mod-pppoe firewall kmod-ipt-offload kmod-tcp-bbr ipv6helper
+ DEFAULT_PACKAGES.bootloader:=
+ 
+ ifneq ($(DUMP),)
 diff --git a/package/base-files/files/bin/config_generate b/package/base-files/files/bin/config_generate
-index ea04d17d..9bee79aa 100755
+index ea04d17d..0a5603df 100755
 --- a/package/base-files/files/bin/config_generate
 +++ b/package/base-files/files/bin/config_generate
 @@ -96,7 +96,7 @@ generate_network() {
@@ -364,6 +387,15 @@ index ea04d17d..9bee79aa 100755
  				*) ipad=${ipaddr:-"192.168.$((addr_offset++)).1"} ;;
  			esac
  
+@@ -234,7 +234,7 @@ generate_static_system() {
+ 	uci -q batch <<-EOF
+ 		delete system.@system[0]
+ 		add system system
+-		set system.@system[-1].hostname='OpenWrt'
++		set system.@system[-1].hostname='FriendlyWrt'
+ 		set system.@system[-1].timezone='UTC'
+ 		set system.@system[-1].ttylogin='0'
+ 		set system.@system[-1].log_size='64'
 diff --git a/package/base-files/files/etc/.gitignore b/package/base-files/files/etc/.gitignore
 new file mode 100644
 index 00000000..577f99e9
@@ -371,6 +403,25 @@ index 00000000..577f99e9
 +++ b/package/base-files/files/etc/.gitignore
 @@ -0,0 +1 @@
 +/rom-version
+diff --git a/package/base-files/files/etc/banner b/package/base-files/files/etc/banner
+index f3af3c01..b4943e07 100644
+--- a/package/base-files/files/etc/banner
++++ b/package/base-files/files/etc/banner
+@@ -1,8 +1,8 @@
+-  _______                     ________        __
+- |       |.-----.-----.-----.|  |  |  |.----.|  |_
+- |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+- |_______||   __|_____|__|__||________||__|  |____|
+-          |__| W I R E L E S S   F R E E D O M
++  ___    _             _ _    __      _____ _____
++ | __| _(_)___ _ _  __| | |_  \ \    / / _ \_   _|
++ | _| '_| / -_) ' \/ _` | | || \ \/\/ /|   / | |
++ |_||_| |_\___|_||_\__,_|_|\_, |\_/\_/ |_|_\ |_|
++                           |__/
+  -----------------------------------------------------
+- %D %V, %C
++ FriendlyWRT %V, %C
+  -----------------------------------------------------
 diff --git a/package/base-files/files/etc/enable-swap.sh b/package/base-files/files/etc/enable-swap.sh
 new file mode 100755
 index 00000000..76dc2b06
@@ -505,17 +556,25 @@ index 00000000..964795f3
 +fi
 diff --git a/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi b/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi
 new file mode 100755
-index 00000000..54a65c4d
+index 00000000..9bbd31de
 --- /dev/null
 +++ b/package/base-files/files/etc/hotplug.d/usb/31-usb_wifi
-@@ -0,0 +1,69 @@
+@@ -0,0 +1,83 @@
 +#!/bin/sh
 +
-+#logger ACTION=$ACTION DEVPATH=$DEVPATH SUBSYSTEM=$SUBSYSTEM DEVTYPE=$DEVTYPE PRODUCT=$PRODUCT MODALIAS=$MODALIAS
++logger ACTION=$ACTION DEVPATH=$DEVPATH SUBSYSTEM=$SUBSYSTEM DEVTYPE=$DEVTYPE PRODUCT=$PRODUCT MODALIAS=$MODALIAS
 +
 +FE_DIR=/root/.friendlyelec/
-+if { [ "${DEVTYPE}" = usb_device ] || [ "${DEVTYPE}" = usb_interface ] ;} && { [ "${PRODUCT}" = "bda/c811/200" ] || [ "${PRODUCT}" = "bda/c820/200" ] ;}; then
-+    MODULE=rtl8821cu
++if { [ "${DEVTYPE}" = usb_device ] || [ "${DEVTYPE}" = usb_interface ] ;} \
++    && { [ "${PRODUCT}" = "bda/b812/210" ] || [ "${PRODUCT}" = "bda/c811/200" ] || [ "${PRODUCT}" = "bda/c820/200" ] ;}; then
++    MODULE=Realtek
++    if [ "${PRODUCT}" = "bda/b812/210" ]; then
++        MODULE=rtl8822bu
++    elif [ "${PRODUCT}" = "bda/c811/200" ]; then
++        MODULE=rtl8821cu
++    elif [ "${PRODUCT}" = "bda/c820/200" ]; then
++	    MODULE=realtek-c820
++    fi
 +    TARGET=wlan${MODULE}
 +
 +    WIFI_PATH=`echo ${DEVPATH} | cut -d/ -f 3-`
@@ -542,9 +601,15 @@ index 00000000..54a65c4d
 +
 +            # Enable wifi and change ssid
 +            if [ -n "`uci get wireless.${RADIO}`" ]; then
++
++                # FIXME: Since these USB wifi is too slow in 5g mode, use 2.4G instead
 +                uci batch <<EOF
++set wireless.${RADIO}.hwmode='11g'
++set wireless.${RADIO}.htmode='HT20'
++set wireless.${RADIO}.channel='7'
++set wireless.${RADIO}.country='00'
 +set wireless.${RADIO}.disabled=0
-+set wireless.default_${RADIO}.ssid=${MODULE}-${ADDRESS}
++set wireless.default_${RADIO}.ssid=FriendlyWrt-${ADDRESS}
 +set wireless.default_${RADIO}.encryption=psk2
 +set wireless.default_${RADIO}.key=password
 +EOF
@@ -671,12 +736,11 @@ index ae04212f..b1e104db 100644
 +net.bridge.bridge-nf-call-iptables=1
 diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
 new file mode 100755
-index 00000000..da71b4f5
+index 00000000..c6561f14
 --- /dev/null
 +++ b/package/base-files/files/root/setup.sh
-@@ -0,0 +1,123 @@
+@@ -0,0 +1,155 @@
 +#!/bin/sh
-+
 +# THIS SCIPRT ONLY RUN ONCE. Base on /etc/firstboot_${board}
 +
 +NEED_RESTART_SERVICE=0
@@ -684,7 +748,6 @@ index 00000000..da71b4f5
 +setup_ssid()
 +{
 +    local r=$1
-+    local chip
 +
 +    if ! uci show wireless.${r} >/dev/null 2>&1; then
 +        return
@@ -700,35 +763,20 @@ index 00000000..da71b4f5
 +    if [ -e "${dev_path}/../idVendor" -a -e "${dev_path}/../idProduct" ]; then
 +	    idVendor=`cat ${dev_path}/../idVendor`
 +	    idProduct=`cat ${dev_path}/../idProduct`
-+	    if [ "x${idVendor}:${idProduct}" = "x0bda:c811" ]; then
-+		    chip="rtl8821cu"
-+		    touch ${FE_DIR}/first_insert_${chip}     # for /etc/hotplug.d/usb/31-usb_wifi
-+	    fi
-+    fi
 +
-+    if [ -e "${dev_path}/vendor" -a -e "${dev_path}/device" ]; then
-+	    idVendor=`cat ${dev_path}/vendor`
-+	    idProduct=`cat ${dev_path}/device`
-+
-+	    # enable 5g wifi-ap (t4)
-+	    if [ "x${idVendor}:${idProduct}" = "x0x02d0:0x4356" ]; then
-+		    uci set wireless.${r}.hwmode='11a'
-+		    uci set wireless.${r}.channel='153'
-+	    fi
-+
-+	    # r2
-+            if [ "x${idVendor}:${idProduct}" = "x0x02d0:0xa9bf" ]; then
-+                    uci set wireless.${r}.hwmode='11a'
-+                    uci set wireless.${r}.channel='153'
-+            fi
++        # onboard wifi
++        # t4: 0x02d0:0x4356
++        # r2: 0x02d0:0xa9bf
++        if [ "x${idVendor}:${idProduct}" = "x0x02d0:0x4356" ] \
++                || [ "x${idVendor}:${idProduct}" = "x0x02d0:0xa9bf" ]; then
++                uci set wireless.${r}.hwmode='11a'
++                uci set wireless.${r}.channel='153'
++                uci set wireless.${r}.country = '00'
++        fi
 +    fi
 +
 +    uci set wireless.${r}.disabled=0
-+    if [ -n "${chip}" ];then
-+        uci set wireless.default_${r}.ssid=${chip}-${mac}
-+    else
-+        uci set wireless.default_${r}.ssid=FriendlyWrt-${mac}
-+    fi
++    uci set wireless.default_${r}.ssid=FriendlyWrt-${mac}
 +    uci set wireless.default_${r}.encryption=psk2
 +    uci set wireless.default_${r}.key=password
 +    uci commit
@@ -796,6 +844,55 @@ index 00000000..da71b4f5
 +
 +# fix netdata issue
 +[ -d /usr/share/netdata/web ] && chown -R root:root /usr/share/netdata/web
++
++# Warning:
++#     Turning on this option will reduce security
++#     To turn it off, set to 0
++ENABLE_SIMPLIFIED_SETTINGS=1
++if [ ${ENABLE_SIMPLIFIED_SETTINGS} -eq 1 ]; then
++    # ttyd: accessible by lan and wan
++    [ -f /etc/init.d/ttyd ] && uci delete ttyd.@ttyd[0].interface
++
++    # samba
++    if [ -f /etc/samba/smb.conf.template ]; then
++        uci set samba.@samba[0].name='FriendlyWrt'
++        uci set samba.@samba[0].workgroup='WORKGROUP'
++        uci set samba.@samba[0].description='FriendlyWrt'
++        uci set samba.@samba[0].homes='1'
++        # samba: allow root access
++        sed -i -e "/^\s*invalid users\s/s/^/#/" /etc/samba/smb.conf.template
++        # samba: accessible by lan and wan
++        sed -i -e "/^\s*interfaces\s/s/^/#/" /etc/samba/smb.conf.template
++        # samba: set default password to 'password'
++        echo "root:0:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:8846F7EAEE8FB117AD06BDD830B7586C:[U          ]:LCT-00000001:" > /etc/samba/smbpasswd
++        sed -i '1 i ' /etc/samba/smb.conf.template
++        sed -i '1 i #   you can run "smbpasswd -a root" command to change password' /etc/samba/smb.conf.template
++        sed -i '1 i #   The default samba credentials: username: root, password: password' /etc/samba/smb.conf.template
++        sed -i '1 i # Important note:' /etc/samba/smb.conf.template
++    fi
++
++    # remove watchcat setting
++    [ -f /etc/init.d/watchcat ] && uci delete system.@watchcat[0]
++
++    uci commit
++    [ -f /etc/init.d/ttyd ] && /etc/init.d/ttyd restart
++    [ -f /etc/init.d/watchcat ] && /etc/init.d/watchcat stop
++    [ -f /etc/init.d/samba ] && /etc/init.d/samba restart
++fi
++
++if [ -d /www/luci-static/argon ]; then
++    # set theme
++    uci set luci.main.mediaurlbase='/luci-static/argon'
++    uci commit luci
++fi
++
++uci get upnpd > /dev/null
++if [ $? -eq 0 ]; then
++    uci set upnpd.config.enabled=1
++    uci set upnpd.config.download=20480
++    uci set upnpd.config.upload=2048
++    uci commit upnpd
++fi
 +
 +logger "done"
 diff --git a/package/base-files/files/usr/bin/fix_wifi_ap.sh b/package/base-files/files/usr/bin/fix_wifi_ap.sh
@@ -11593,6 +11690,34 @@ index 08e9ee96..56a0f48e 100644
  	done
  }
  
+diff --git a/package/lean/default-settings/files/zzz-default-settings b/package/lean/default-settings/files/zzz-default-settings
+index edd79465..03b4471f 100755
+--- a/package/lean/default-settings/files/zzz-default-settings
++++ b/package/lean/default-settings/files/zzz-default-settings
+@@ -7,9 +7,6 @@ uci set system.@system[0].timezone=CST-8
+ uci set system.@system[0].zonename=Asia/Shanghai
+ uci commit system
+ 
+-uci set fstab.@global[0].anon_mount=1
+-uci commit fstab
+-
+ rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
+ rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
+@@ -29,12 +26,10 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
+ 
+ ln -sf /sbin/ip /usr/bin/ip
+ 
+-sed -i 's/downloads.openwrt.org/openwrt.proxy.ustclug.org/g' /etc/opkg/distfeeds.conf
++sed -i 's/downloads.openwrt.org/mirrors.tuna.tsinghua.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
+ sed -i 's/http:/https:/g' /etc/opkg/distfeeds.conf
+ sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
+ 
+-sed -i "s/# //g" /etc/opkg/distfeeds.conf
+-
+ sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
+ echo "iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
+ echo "iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
 diff --git a/package/libs/openssl/Makefile b/package/libs/openssl/Makefile
 index e2f26615..4b07ecd9 100644
 --- a/package/libs/openssl/Makefile
@@ -11614,6 +11739,60 @@ index e2f26615..4b07ecd9 100644
  		$(OPENSSL_MAKEFLAGS) \
  		all
  	$(MAKE) -C $(PKG_BUILD_DIR) \
+diff --git a/package/network/services/samba36/files/smb.conf.template b/package/network/services/samba36/files/smb.conf.template
+index fb82732d..7e6fab75 100644
+--- a/package/network/services/samba36/files/smb.conf.template
++++ b/package/network/services/samba36/files/smb.conf.template
+@@ -8,7 +8,8 @@
+ 	bind interfaces only = yes
+ 	deadtime = 30
+ 	enable core files = no
+-	invalid users = root
++	guest account = root
++#	invalid users = root
+ 	local master = yes
+ 	map to guest = Bad User
+ 	max protocol = SMB2
+diff --git a/package/utils/p7zip/Makefile b/package/utils/p7zip/Makefile
+new file mode 100644
+index 00000000..400a5b1e
+--- /dev/null
++++ b/package/utils/p7zip/Makefile
+@@ -0,0 +1,34 @@
++#
++# Copyright (C) 2009-2011 OpenWrt.org
++#
++# This is free software, licensed under the GNU General Public License v2.
++# See /LICENSE for more information.
++#
++include $(TOPDIR)/rules.mk
++
++PKG_NAME:=p7zip
++PKG_VERSION:=16.02
++PKG_RELEASE:=1
++
++PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION)_src_all.tar.bz2
++PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)_$(PKG_VERSION)
++PKG_SOURCE_URL:=@SF/$(PKG_NAME)
++PKG_HASH:=5eb20ac0e2944f6cb9c2d51dd6c4518941c185347d4089ea89087ffdd6e2341f
++
++include $(INCLUDE_DIR)/package.mk
++
++define Package/p7zip
++	SECTION:=utils
++	CATEGORY:=Utilities
++	TITLE:=p7zip archiver
++	URL:=http://http://www.7-zip.org
++	DEPENDS:=+libstdcpp +libpthread
++endef
++
++define Package/p7zip/install
++	$(INSTALL_DIR) $(1)/usr/bin
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/7za $(1)/usr/bin/
++	$(LN) 7za $(1)/usr/bin/7z
++endef
++
++$(eval $(call BuildPackage,p7zip))
 diff --git a/package/utils/usbmode/Makefile b/package/utils/usbmode/Makefile
 index f3e46ec0..ea668048 100644
 --- a/package/utils/usbmode/Makefile
@@ -19113,6 +19292,13 @@ index 00000000..d3eab796
 +++ b/target/linux/rockchip-rk3328/base-files/etc/modules.d/10-rtl8821cu
 @@ -0,0 +1 @@
 +rtl8821CU
+diff --git a/target/linux/rockchip-rk3328/base-files/etc/modules.d/10-rtl8822bu b/target/linux/rockchip-rk3328/base-files/etc/modules.d/10-rtl8822bu
+new file mode 100755
+index 00000000..f7ffc0d5
+--- /dev/null
++++ b/target/linux/rockchip-rk3328/base-files/etc/modules.d/10-rtl8822bu
+@@ -0,0 +1 @@
++rtl8822bu
 diff --git a/target/linux/rockchip-rk3328/base-files/etc/rc.d/S96fa-rk3328-misc b/target/linux/rockchip-rk3328/base-files/etc/rc.d/S96fa-rk3328-misc
 new file mode 120000
 index 00000000..dbf8b573

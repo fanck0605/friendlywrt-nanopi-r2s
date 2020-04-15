@@ -60,10 +60,10 @@ jobs:
           cd friendlywrt
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
 
-      - name: Apply chuck's modification
-        run: |
-          cd rk3328/friendlywrt
-          git apply ../../patches/005-openwrt-personal-modification.patch
+#      - name: Apply chuck's modification
+#        run: |
+#          cd rk3328/friendlywrt
+#          git apply ../../patches/005-openwrt-personal-modification.patch
 
       - name: Upgrade Argon Theme
         run: |
