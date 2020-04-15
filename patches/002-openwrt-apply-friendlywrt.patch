@@ -736,7 +736,7 @@ index ae04212f..b1e104db 100644
 +net.bridge.bridge-nf-call-iptables=1
 diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
 new file mode 100755
-index 00000000..c6561f14
+index 00000000..1d1eb57d
 --- /dev/null
 +++ b/package/base-files/files/root/setup.sh
 @@ -0,0 +1,155 @@
@@ -848,7 +848,7 @@ index 00000000..c6561f14
 +# Warning:
 +#     Turning on this option will reduce security
 +#     To turn it off, set to 0
-+ENABLE_SIMPLIFIED_SETTINGS=1
++ENABLE_SIMPLIFIED_SETTINGS=0
 +if [ ${ENABLE_SIMPLIFIED_SETTINGS} -eq 1 ]; then
 +    # ttyd: accessible by lan and wan
 +    [ -f /etc/init.d/ttyd ] && uci delete ttyd.@ttyd[0].interface
