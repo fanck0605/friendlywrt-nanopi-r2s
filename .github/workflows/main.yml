@@ -59,6 +59,7 @@ jobs:
           git clone https://github.com/coolsnowwolf/lede friendlywrt
           cd friendlywrt
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
+          sed -i 's/#src-git/src-git/g' ./feeds.conf.default
 
 #      - name: Apply chuck's modification
 #        run: |
