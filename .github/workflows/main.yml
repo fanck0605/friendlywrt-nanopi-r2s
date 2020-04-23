@@ -70,12 +70,12 @@ jobs:
         run: |
           cd rk3328/friendlywrt/package/lean
           rm -rf luci-theme-argon
-          git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
+          git clone --single-branch -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 
       - name: Install filebrowser
         run: |
           rm -rf openwrt
-          git clone -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git --depth=1
+          git clone --single-branch -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git --depth=1
           mkdir -p rk3328/friendlywrt/package/ctcgfw
           cp -a openwrt/package/ctcgfw/filebrowser rk3328/friendlywrt/package/ctcgfw/
           cp -a openwrt/package/ctcgfw/luci-app-filebrowser rk3328/friendlywrt/package/ctcgfw/
@@ -86,6 +86,15 @@ jobs:
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
+
+      # This may have no effect, patches will not apply to kernel
+      - name: Install Openwrt octeontx patches
+        run: |
+          rm -rf openwrt
+          git clone --single-branch https://github.com/openwrt/openwrt.git --depth=1
+          cp -a openwrt/target/linux/octeontx/patches-5.4 rk3328/friendlywrt/target/linux/rockchip-rk3328/
+          ls rk3328/friendlywrt/target/linux/rockchip-rk3328/patches-5.4
+          rm -rf openwrt
 
       - name: Customize Configuration Files
         run: |
