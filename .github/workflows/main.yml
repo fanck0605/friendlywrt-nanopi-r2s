@@ -96,6 +96,7 @@ jobs:
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/pending-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/octeontx/patches-5.4
+          cp -a ./target/linux/generic/files/* ../rk3328/kernel/
           cd ../
           rm -rf openwrt
 
