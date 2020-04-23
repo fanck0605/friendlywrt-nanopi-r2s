@@ -81,12 +81,6 @@ jobs:
           cp -a openwrt/package/ctcgfw/luci-app-filebrowser rk3328/friendlywrt/package/ctcgfw/
           rm -rf openwrt
 
-      - name: Patch Kernel
-        run: |
-          cd rk3328/kernel/
-          wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
-          git apply ../../patches/001-kernel-add-full_cone_nat.patch
-
       - name: Install Openwrt patches
         run: |
           rm -rf openwrt
@@ -95,10 +89,16 @@ jobs:
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/backport-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/pending-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
-          ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/octeontx/patches-5.4
           cp -a ./target/linux/generic/files/* ../rk3328/kernel/
           cd ../
           rm -rf openwrt
+
+      - name: Patch Kernel
+        run: |
+          cd rk3328/kernel/
+          wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
+          git apply ../../patches/001-kernel-add-full_cone_nat.patch
+          git apply ../../patches/005-kernel-add-flow_offload.patch
 
       - name: Customize Configuration Files
         run: |
