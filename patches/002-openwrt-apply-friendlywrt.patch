@@ -11660,10 +11660,10 @@ literal 0
 HcmV?d00001
 
 diff --git a/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh b/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
-index 08e9ee96..56a0f48e 100644
+index f3632009..bcb8e268 100644
 --- a/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
 +++ b/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
-@@ -497,8 +497,12 @@ mac80211_prepare_vif() {
+@@ -507,8 +507,12 @@ mac80211_prepare_vif() {
  
  	json_get_vars ifname mode ssid wds powersave macaddr enable
  
@@ -11677,9 +11677,9 @@ index 08e9ee96..56a0f48e 100644
  
  	set_default wds 0
  	set_default powersave 0
-@@ -816,7 +820,7 @@ mac80211_vap_cleanup() {
+@@ -826,7 +830,7 @@ mac80211_vap_cleanup() {
  	for wdev in $vaps; do
- 		[ "$service" != "none" ] && ubus call ${service}.${phy} config_remove "{\"iface\":\"$wdev\"}"
+ 		[ "$service" != "none" ] && ubus call ${service} config_remove "{\"iface\":\"$wdev\"}"
  		ip link set dev "$wdev" down 2>/dev/null
 -		iw dev "$wdev" del
 +		#iw dev "$wdev" del
@@ -11715,10 +11715,10 @@ index edd79465..03b4471f 100755
  echo "iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
  echo "iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
 diff --git a/package/libs/openssl/Makefile b/package/libs/openssl/Makefile
-index e2f26615..4b07ecd9 100644
+index 0db051b6..434a03ae 100644
 --- a/package/libs/openssl/Makefile
 +++ b/package/libs/openssl/Makefile
-@@ -340,7 +340,6 @@ define Build/Configure
+@@ -341,7 +341,6 @@ define Build/Configure
  	)
  endef
  
@@ -11726,7 +11726,7 @@ index e2f26615..4b07ecd9 100644
  TARGET_LDFLAGS += -Wl,--gc-sections
  
  define Build/Compile
-@@ -348,7 +347,7 @@ define Build/Compile
+@@ -349,7 +348,7 @@ define Build/Compile
  		CROSS_COMPILE="$(TARGET_CROSS)" \
  		CC="$(TARGET_CC)" \
  		SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) \

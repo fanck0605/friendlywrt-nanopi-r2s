@@ -61,11 +61,6 @@ jobs:
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
           sed -i 's/#src-git/src-git/g' ./feeds.conf.default
 
-#      - name: Apply chuck's modification
-#        run: |
-#          cd rk3328/friendlywrt
-#          git apply ../../patches/005-openwrt-personal-modification.patch
-
       - name: Upgrade Argon Theme
         run: |
           cd rk3328/friendlywrt/package/lean
