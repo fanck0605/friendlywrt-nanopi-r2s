@@ -95,7 +95,7 @@ jobs:
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
           echo '
           CONFIG_NF_FLOW_TABLE_HW=m
-          CONFIG_NETFILTER_XT_TARGET_FLOWOFFLOAD=m\
+          CONFIG_NETFILTER_XT_TARGET_FLOWOFFLOAD=m
           ' >> ./arch/arm64/configs/nanopi-r2_linux_defconfig
           cat ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
