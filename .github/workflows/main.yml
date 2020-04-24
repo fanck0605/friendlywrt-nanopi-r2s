@@ -46,9 +46,7 @@ jobs:
 
       - name: Initialization Source
         run: |
-          rm -rf rk3328
-          mkdir rk3328
-          cd rk3328
+          rm -rf rk3328 && mkdir rk3328 && cd rk3328
           repo init -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v19.07.1 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
           repo sync -c --no-clone-bundle -j8
 
@@ -90,16 +88,18 @@ jobs:
           cd ../
           rm -rf openwrt
 
-      - name: Patch Kernel
+      - name: Enable Kernel futures
         run: |
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
-#          git apply ../../patches/005-kernel-add-flow_offload.patch
+          echo '
+          CONFIG_NF_FLOW_TABLE_HW=m
+          CONFIG_NETFILTER_XT_TARGET_FLOWOFFLOAD=m
+          ' > ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
       - name: Customize Configuration Files
         run: |
-          find rk3328/device/ -name distfeeds.conf -delete
           cp config_rk3328 rk3328/configs/config_rk3328
 
       - name: Swap wan and lan
