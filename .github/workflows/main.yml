@@ -86,6 +86,9 @@ jobs:
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/octeontx/patches-5.4
           cp -a ./target/linux/generic/files/* ../rk3328/kernel/
+          cat ./target/linux/generic/config-5.4 | grep -v '^#' | grep '=y' >> ../rk3328/kernel/arch/arm64/configs/nanopi-r2_linux_defconfig
+          cat ./target/linux/rockchip/config-default | grep -v '^#' | grep '=y' >> ../rk3328/kernel/arch/arm64/configs/nanopi-r2_linux_defconfig
+          cat ./target/linux/rockchip/armv8/config-5.4 | grep -v '^#' | grep '=y' >> ../rk3328/kernel/arch/arm64/configs/nanopi-r2_linux_defconfig
           cd ../
           rm -rf openwrt
 
