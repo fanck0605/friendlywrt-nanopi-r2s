@@ -2,6 +2,11 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ * Copyright (c) 2020, Chuck <fanck0605@qq.com>
+ *
+ * 警告:对着屏幕的哥们,我们允许你使用此脚本，但不允许你抹去作者的信息,请保留这段话。
+ */
 public class MergeKernelConfig {
     public static void main(String[] args) throws IOException {
         // config from lean's kernel 4.14
