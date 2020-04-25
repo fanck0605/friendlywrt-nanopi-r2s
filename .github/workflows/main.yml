@@ -84,7 +84,6 @@ jobs:
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/octeontx/patches-5.4
           cp -a ./target/linux/generic/files/* ../rk3328/kernel/
-          cat ./target/linux/generic/config-5.4 | grep -v '^#' | grep '=y' >> ../rk3328/kernel/arch/arm64/configs/nanopi-r2_linux_defconfig
           cd ../
           rm -rf openwrt
 
@@ -93,11 +92,7 @@ jobs:
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
-          echo '
-          CONFIG_NF_FLOW_TABLE_HW=m
-          CONFIG_NETFILTER_XT_TARGET_FLOWOFFLOAD=m
-          ' >> ./arch/arm64/configs/nanopi-r2_linux_defconfig
-          cat ./arch/arm64/configs/nanopi-r2_linux_defconfig
+          cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
       - name: Customize Configuration Files
         run: |
