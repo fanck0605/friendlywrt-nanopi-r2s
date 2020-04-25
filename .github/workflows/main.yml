@@ -134,6 +134,13 @@ jobs:
           cd rk3328/friendlywrt
           ./scripts/diffconfig.sh > ../../artifact/config-lite
           cp .config ../../artifact/config-full
+          cd ../kernel
+          export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+          export CROSS_COMPILE='aarch64-linux-gnu-'
+          export ARCH=arm64
+          make savedefconfig
+          cp .config ../../artifact/kconfig-full
+          cp defconfig ../../artifact/kconfig-lite
 
       - name: Upload Artifact
         uses: actions/upload-artifact@master
