@@ -9,6 +9,7 @@ https://github.com/fanck0605/nanopi_r2s/releases
 * password: password
 
 ## 特色
+* 完美的 Flow Offload 支持，不与 PPPoE 冲突，CPU 负载
 * 使用 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede)，并 merge 了 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
     - 编译时，自动使用 lean 的最新源码
     - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性（由于固件限制，一些内核相关的功能可能无法启用）
