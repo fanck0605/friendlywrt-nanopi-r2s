@@ -1,7 +1,9 @@
 # 使用 Github Actions 在线编译 NanoPi-R2s 固件
 
-## 预编译的版本
-https://github.com/fanck0605/nanopi_r2s/releases
+## 相关链接
+预编译的版本: https://github.com/fanck0605/nanopi_r2s/releases
+
+本项目采用的源码: https://github.com/fanck0605/friendlywrt-lean
 
 ## 说明
 * ipv4: 192.168.2.1
