@@ -352,7 +352,7 @@ index 9637424c..310b0038 100644
  	echo 'src/gz %d_base %U/packages/%A/base'; \
  	$(foreach feed,$(FEEDS_AVAILABLE), \
 diff --git a/include/target.mk b/include/target.mk
-index 8341e4f4..fd494155 100644
+index 8341e4f4..c8adc8dd 100644
 --- a/include/target.mk
 +++ b/include/target.mk
 @@ -15,15 +15,13 @@ DEVICE_TYPE?=router
@@ -363,9 +363,10 @@ index 8341e4f4..fd494155 100644
 -luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus luci-app-unblockmusic \
 -luci-app-arpbind luci-app-vlmcsd luci-app-wol luci-app-ramfree \
 -luci-app-sfe luci-app-flowoffload luci-app-nlbwmon luci-app-accesscontrol luci-app-cpufreq \
+-ddns-scripts_aliyun ddns-scripts_dnspod
 +default-settings luci luci-app-ddns luci-app-upnp luci-app-autoreboot \
 +luci-app-vsftpd luci-app-ssr-plus luci-app-arpbind luci-app-wol \
- ddns-scripts_aliyun ddns-scripts_dnspod
++luci-app-sfe luci-app-flowoffload ddns-scripts_aliyun ddns-scripts_dnspod
  # For nas targets
  DEFAULT_PACKAGES.nas:=block-mount fdisk lsblk mdadm
  # For router targets
