@@ -1,5 +1,8 @@
 # 使用 Github Actions 在线编译 NanoPi-R2s 固件
 
+## 温情提醒
+刷机请**不要**保留配置，任何因保留配置导致的问题不给予解决！
+
 ## 相关链接
 预编译的版本: https://github.com/fanck0605/nanopi_r2s/releases
 
