@@ -1,15 +1,3 @@
-diff --git a/arch/arm64/configs/nanopi-r2_linux_defconfig b/arch/arm64/configs/nanopi-r2_linux_defconfig
-index 240a9bf57f7a..b30ac201c92c 100644
---- a/arch/arm64/configs/nanopi-r2_linux_defconfig
-+++ b/arch/arm64/configs/nanopi-r2_linux_defconfig
-@@ -345,6 +345,7 @@ CONFIG_IP_NF_TARGET_SYNPROXY=m
- CONFIG_IP_NF_NAT=m
- CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
-+CONFIG_IP_NF_TARGET_FULLCONENAT=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_CLUSTERIP=m
 diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
 index f17b402111ce..99f691a677a1 100644
 --- a/net/ipv4/netfilter/Kconfig
