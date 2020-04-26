@@ -9,14 +9,12 @@ https://github.com/fanck0605/nanopi_r2s/releases
 * password: password
 
 ## 特色
-* 完美的 Flow Offload 支持，不与 PPPoE 冲突，CPU 负载
+* 完美的 Flow Offload 支持，不与 PPPoE 冲突，降低 CPU 负载
 * 使用 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede)，并 merge 了 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt)
-    - 编译时，自动使用 lean 的最新源码
-    - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性（由于固件限制，一些内核相关的功能可能无法启用）
+    - 包含大部分 [coolsnowwolf/lede](https://github.com/coolsnowwolf/lede) 的特性（网络相关的内核功能已经正常啦！）
     - 可以支持 [friendlyarm/friendlywrt](https://github.com/friendlyarm/friendlywrt) 所支持的机型
-* 集成最新实时监控 Netdata，方便查看 NanoPi-R2s 的实时状态
 * 开启了 [Full Cone Nat](https://github.com/Chion82/netfilter-full-cone-nat)，对游戏用户支持更佳
-* 默认支持 IPv6，可以访问最新 IPv6 规范的互联网。
+* 支持 IPv6，可以访问最新 IPv6 规范的互联网。
     - 需要关闭 *网络* -> *DHCP/DNS* -> *高级设置* -> *禁止解析 IPv6 DNS 记录*
 * wan 和 lan 互换，lan 口是原生千兆网卡，更加稳定
 
