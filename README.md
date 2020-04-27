@@ -6,7 +6,11 @@
 ## 相关链接
 预编译的版本: https://github.com/fanck0605/nanopi_r2s/releases
 
-本项目采用的源码: https://github.com/fanck0605/friendlywrt-lean
+本项目采用的源码: 
+
+https://github.com/fanck0605/friendlywrt-lean
+
+https://github.com/fanck0605/kernel-rockchip
 
 ## 说明
 * ipv4: 192.168.2.1

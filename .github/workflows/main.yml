@@ -60,6 +60,12 @@ jobs:
           git apply ../../patches/002-openwrt-apply-friendlywrt.patch
           sed -i 's/#src-git/src-git/g' ./feeds.conf.default
 
+      - name: Update kernel-rockchip
+        run: |
+          cd rk3328
+          rm -rf kernel
+          git clone --single-branch -b nanopi-r2-v5.4.y https://github.com/fanck0605/kernel-rockchip kernel
+
       - name: Upgrade Argon Theme
         run: |
           cd rk3328/friendlywrt/package/lean
@@ -93,7 +99,6 @@ jobs:
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
-          cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
       - name: Customize Configuration Files
         run: |
