@@ -737,10 +737,10 @@ index ae04212f..b1e104db 100644
 +net.bridge.bridge-nf-call-iptables=1
 diff --git a/package/base-files/files/root/setup.sh b/package/base-files/files/root/setup.sh
 new file mode 100755
-index 00000000..76629dea
+index 00000000..d52a8d9c
 --- /dev/null
 +++ b/package/base-files/files/root/setup.sh
-@@ -0,0 +1,151 @@
+@@ -0,0 +1,143 @@
 +#!/bin/sh
 +# THIS SCIPRT ONLY RUN ONCE. Base on /etc/firstboot_${board}
 +
@@ -881,14 +881,6 @@ index 00000000..76629dea
 +    # set theme
 +    uci set luci.main.mediaurlbase='/luci-static/argon'
 +    uci commit luci
-+fi
-+
-+uci get upnpd > /dev/null
-+if [ $? -eq 0 ]; then
-+    uci set upnpd.config.enabled=1
-+    uci set upnpd.config.download=20480
-+    uci set upnpd.config.upload=2048
-+    uci commit upnpd
 +fi
 +
 +logger "done"
@@ -11736,6 +11728,16 @@ index 0db051b6..434a03ae 100644
  		$(OPENSSL_MAKEFLAGS) \
  		all
  	$(MAKE) -C $(PKG_BUILD_DIR) \
+diff --git a/package/network/services/dropbear/files/dropbear.config b/package/network/services/dropbear/files/dropbear.config
+index 2139ba0b..e2a936d7 100644
+--- a/package/network/services/dropbear/files/dropbear.config
++++ b/package/network/services/dropbear/files/dropbear.config
+@@ -2,4 +2,5 @@ config dropbear
+ 	option PasswordAuth 'on'
+ 	option RootPasswordAuth 'on'
+ 	option Port         '22'
++	option Interface 'lan'
+ #	option BannerFile   '/etc/banner'
 diff --git a/package/network/services/samba36/files/samba.config b/package/network/services/samba36/files/samba.config
 index c79db0d3..245f7774 100644
 --- a/package/network/services/samba36/files/samba.config
