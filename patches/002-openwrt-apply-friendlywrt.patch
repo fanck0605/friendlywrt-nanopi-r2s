@@ -11728,16 +11728,6 @@ index 0db051b6..434a03ae 100644
  		$(OPENSSL_MAKEFLAGS) \
  		all
  	$(MAKE) -C $(PKG_BUILD_DIR) \
-diff --git a/package/network/services/dropbear/files/dropbear.config b/package/network/services/dropbear/files/dropbear.config
-index 2139ba0b..e2a936d7 100644
---- a/package/network/services/dropbear/files/dropbear.config
-+++ b/package/network/services/dropbear/files/dropbear.config
-@@ -2,4 +2,5 @@ config dropbear
- 	option PasswordAuth 'on'
- 	option RootPasswordAuth 'on'
- 	option Port         '22'
-+	option Interface 'lan'
- #	option BannerFile   '/etc/banner'
 diff --git a/package/network/services/samba36/files/samba.config b/package/network/services/samba36/files/samba.config
 index c79db0d3..245f7774 100644
 --- a/package/network/services/samba36/files/samba.config
