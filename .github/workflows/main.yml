@@ -99,6 +99,7 @@ jobs:
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
+          cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
       - name: Customize Configuration Files
         run: |
