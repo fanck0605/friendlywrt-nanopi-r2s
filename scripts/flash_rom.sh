@@ -32,7 +32,7 @@ flash_rom() {
     echo -e "\e[92m刷写完毕，正在重启...\e[0m"
 
     # 立即重新启动，此操作相当于断电重启，所以之前需要挂载为只读，防止文件系统错误
-    reboot
+    echo b >/proc/sysrq-trigger
 }
 
 choose_yn() {
