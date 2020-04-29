@@ -43,6 +43,7 @@ CONFIG_PACKAGE_iputils-traceroute6=y
 CONFIG_PACKAGE_iwinfo=y
 CONFIG_PACKAGE_losetup=y
 CONFIG_PACKAGE_pv=y
+CONFIG_PACKAGE_stress=y
 CONFIG_PACKAGE_triggerhappy=y
 CONFIG_PACKAGE_uboot-envtools=y
 CONFIG_PACKAGE_unzip=y
@@ -57,6 +58,7 @@ CONFIG_PACKAGE_luci-app-filetransfer=y
 CONFIG_PACKAGE_luci-app-frpc=y
 CONFIG_PACKAGE_luci-app-netdata=y
 CONFIG_PACKAGE_luci-app-samba=y
+CONFIG_PACKAGE_luci-app-ttyd=y
 CONFIG_PACKAGE_luci-app-unblockmusic=y
 CONFIG_PACKAGE_luci-theme-argon=y
 # CONFIG_UnblockNeteaseMusic_NodeJS is not set
