@@ -33,7 +33,7 @@ cd friendlywrt
 rm -rf package/lean/luci-theme-argon
 git clone --single-branch --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 cd ..
-# end of install filebrowser
+# end of update argon
 
 # install filebrowser
 git clone --single-branch --depth=1 -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git openwrt
@@ -42,6 +42,14 @@ cp -a openwrt/package/ctcgfw/filebrowser friendlywrt/package/ctcgfw/
 cp -a openwrt/package/ctcgfw/luci-app-filebrowser friendlywrt/package/ctcgfw/
 rm -rf openwrt
 # end of install filebrowser
+
+# install r2sflasher
+rm -rf r2sflasher
+mkdir -p friendlywrt/package/songchenwen
+git clone https://github.com/songchenwen/nanopi-r2s.git r2sflasher
+cp -a r2sflasher/luci-app-r2sflasher friendlywrt/package/songchenwen/
+rm -rf r2sflasher
+# end of install r2sflasher
 
 # swap wan and lan
 cd friendlywrt
