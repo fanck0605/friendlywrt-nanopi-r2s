@@ -29,9 +29,11 @@ https://github.com/fanck0605/kernel-rockchip
 
 ## 用法
 1. Fork 到自己的账号下
-2. 进入 Actions 界面，启用 Github Actions
+2. 进入 Actions 界面，启用 Github Actions(**必须要先启用**)
 3. 在 `config_rk3328` 文件中，自定义所需要的软件包
-    - 比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
+     - 比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
+4. 如需usb 网卡功能，解除 `#cat config_usb-net >> rk3328/configs/config_rk3328` 的注释即可
+     - 未经测试不保证能用
 
 ## 注意
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
