@@ -105,6 +105,7 @@ jobs:
       - name: Customize Configuration Files
         run: |
           cat config_rk3328 > rk3328/configs/config_rk3328
+          #cat config_usb-net >> rk3328/configs/config_rk3328
 
       # 如果不喜欢互换, 直接注释即可
       - name: Swap wan and lan
