@@ -81,6 +81,14 @@ jobs:
           cp -a openwrt/package/ctcgfw/luci-app-filebrowser rk3328/friendlywrt/package/ctcgfw/
           rm -rf openwrt
 
+      - name: Install luci-app-r2sflasher
+        run: |
+          rm -rf r2sflasher
+          mkdir -p rk3328/friendlywrt/package/songchenwen
+          git clone https://github.com/songchenwen/nanopi-r2s.git r2sflasher
+          cp -a r2sflasher/luci-app-r2sflasher rk3328/friendlywrt/package/songchenwen/
+          rm -rf r2sflasher
+
       # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
       - name: Install Openwrt patches
         run: |
