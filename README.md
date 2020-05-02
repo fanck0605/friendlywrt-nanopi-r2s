@@ -31,7 +31,8 @@ https://github.com/fanck0605/kernel-rockchip
 1. Fork 到自己的账号下
 2. 进入 Actions 界面，启用 Github Actions(**必须要先启用**)
 3. 在 `config_rk3328` 文件中，自定义所需要的软件包
-     - 比如需要 luci-app-samba， 那么只要在文件中添加一行 CONFIG_PACKAGE_luci-app-samba=y
+     - 比如需要 `luci-app-samba`， 那么只要在文件中添加一行 `CONFIG_PACKAGE_luci-app-samba=y`
+     - 只需添加 `luci-app-samba` 即可，依赖会自动补全；请不要去自己添加任何多余组件，除非你知道自己在做什么。
 4. 如需usb 网卡功能，解除 `#cat config_usb-net >> rk3328/configs/config_rk3328` 的注释即可
      - 未经测试不保证能用
 
