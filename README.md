@@ -10,7 +10,7 @@
 
 https://github.com/fanck0605/friendlywrt-lean
 
-https://github.com/fanck0605/kernel-rockchip
+https://github.com/fanck0605/friendlywrt-kernel
 
 ## 说明
 * ipv4: 192.168.2.1
@@ -39,10 +39,7 @@ https://github.com/fanck0605/kernel-rockchip
 ## 注意
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
 
-已经合并 friendlyelec 修改的 Lean's LEDE: [fanck0605/friendlywrt](https://github.com/fanck0605/friendlywrt)
- - 这个版本加入了我自己的一些配置，如需去除，请使用 git reset --hard <commit_id>
-
-产品发布初期，官方代码每天都在变，遇到无法编译时，请过来查看 `.yml` 与 `config` 最新异动。
+代码已经趋于稳定，一般情况不会编译失败。如果我哪天闲的蛋疼更新了源码，导致编译失败时，还请麻烦过来查看 `.yml` 与 `config` 最新异动。
 
 cifsd 与 samba 有冲突，只能二选一。(cifsd 暂时无法工作)
 ps: 可能是永久
