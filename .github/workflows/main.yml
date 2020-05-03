@@ -132,20 +132,20 @@ jobs:
           sudo df -lh
           lodev=$(sudo losetup -f)
           echo "found unused loop dev $lodev"
-          sudo losetup -o 100663296 $lodev rk3328/out/*.img
+          sudo losetup -P ${lodev} rk3328/out/FriendlyWrt*.img
           sudo rm -rf /mnt/friendlywrt-tmp
           sudo mkdir -p /mnt/friendlywrt-tmp
-          sudo mount $lodev /mnt/friendlywrt-tmp
+          sudo mount ${lodev}p1 /mnt/friendlywrt-tmp
           sudo chown -R root:root /mnt/friendlywrt-tmp
           sudo umount /mnt/friendlywrt-tmp
-          sudo losetup -d $lodev
+          sudo losetup -d ${lodev}
 
       - name: Assemble Artifact
         run: |
           rm -rf ./artifact/
           mkdir -p ./artifact/
-          gzip rk3328/out/*.img
-          cp rk3328/out/*.img* ./artifact/
+          gzip rk3328/out/FriendlyWrt*.img
+          cp rk3328/out/FriendlyWrt*.img.gz ./artifact/
 
       # 保存交叉编译配置, 需要先设置平台
       - name: Save Configurations
