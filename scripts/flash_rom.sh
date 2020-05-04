@@ -19,7 +19,15 @@ flash_rom() {
     # 立即重新挂载所有的文件系统为只读，防止新数据损坏镜像
     echo u >/proc/sysrq-trigger
 
-    # 使用 dd fsync 模式保证数据写入完整性
+    rotestfile="/rotest.txt"
+    touch ${rotestfile}
+    if [ $? -eq 0 ]; then
+        rm ${rotestfile}
+        echo -e "\e[91mUnmount system partition failed! Please reboot before using.\e[0m"
+        exit 1
+    fi
+
+    # it may be more safer to use fsync
     case $rom_type in
     gz)
         pv $rom_path | gunzip -c | dd of=$sys_dev conv=fsync
@@ -29,9 +37,14 @@ flash_rom() {
         ;;
     esac
 
-    echo -e "\e[92m刷写完毕，正在重启...\e[0m"
+    echo -e "\e[92mFlashing done! Rebooting...\e[0m"
 
-    # 立即重新启动，此操作相当于断电重启，所以之前需要挂载为只读，防止文件系统错误
+    # waiting for std out, it is necessary,
+    # otherwise you will not see the output
+    sleep 1
+
+    # here we can't use `reboot`, after we flash
+    # the system partition, `reboot` may fail
     echo b >/proc/sysrq-trigger
 }
 
@@ -46,7 +59,7 @@ choose_yn() {
             return 1
             ;;
         *)
-            echo -e "\e[92mPlease enter y/n: \e[0m\c"
+            echo -e "\e[92mPlease enter Y/n: \e[0m\c"
             ;;
         esac
     done
@@ -158,8 +171,8 @@ if [ $save_conf = true ]; then
     mkdir -p /mnt/friendlywrt-tmp
 
     lodev=$(losetup -f)
-    losetup -o 100663296 $lodev /root/FriendlyWrt.img
-    mount $lodev /mnt/friendlywrt-tmp
+    losetup -P $lodev /root/FriendlyWrt.img
+    mount ${lodev}p1 /mnt/friendlywrt-tmp
 
     sysupgrade -b /tmp/backup.tar.gz
     tar zxf /tmp/backup.tar.gz -C /mnt/friendlywrt-tmp
