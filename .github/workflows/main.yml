@@ -56,7 +56,7 @@ jobs:
       - name: Initialization Source
         run: |
           rm -rf rk3328 && mkdir rk3328 && cd rk3328
-          repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b master-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
+          repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
           repo sync -c --no-clone-bundle -j8
 
       # refer to coolsnowwolf/lede
