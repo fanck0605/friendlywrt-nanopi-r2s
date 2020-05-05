@@ -11,14 +11,13 @@
 set -eu
 
 # init main project
-echo "deleting ./nanopi-r2s"
 sudo rm -rf nanopi-r2s
-git clone --depth=1 -b lean https://github.com/fanck0605/nanopi-r2s.git nanopi-r2s
+git clone --depth 1 -b lean https://github.com/fanck0605/nanopi-r2s.git nanopi-r2s
 cd nanopi-r2s
 
 # init friendlywrt source
 mkdir rk3328 && cd rk3328
-repo init -u https://github.com/fanck0605/friendlywrt_manifests -b master-v19.07.1 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
+repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b master-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
 repo sync -c --no-clone-bundle -j8
 
 
@@ -32,12 +31,12 @@ cd ..
 # update argon
 cd friendlywrt
 rm -rf package/lean/luci-theme-argon
-git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
+git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 cd ..
 # end of update argon
 
 # install filebrowser
-git clone --depth=1 -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git openwrt
+git clone --depth 1 -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git openwrt
 mkdir -p friendlywrt/package/ctcgfw
 cp -a openwrt/package/ctcgfw/filebrowser friendlywrt/package/ctcgfw/
 cp -a openwrt/package/ctcgfw/luci-app-filebrowser friendlywrt/package/ctcgfw/
@@ -47,7 +46,7 @@ rm -rf openwrt
 # install r2sflasher
 rm -rf r2sflasher
 mkdir -p friendlywrt/package/songchenwen
-git clone --depth=1 https://github.com/songchenwen/nanopi-r2s.git r2sflasher
+git clone --depth 1 https://github.com/songchenwen/nanopi-r2s.git r2sflasher
 cp -a r2sflasher/luci-app-r2sflasher friendlywrt/package/songchenwen/
 rm -rf r2sflasher
 # end of install r2sflasher
@@ -61,7 +60,7 @@ cd ..
 
 
 # install openwrt's kernel patches
-git clone --depth=1 -b master https://github.com/openwrt/openwrt.git openwrt
+git clone --depth 1 -b master https://github.com/openwrt/openwrt.git openwrt
 cd openwrt
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/backport-5.4
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/pending-5.4
@@ -100,10 +99,10 @@ exit 0
 ./build.sh nanopi_r2s.mk
 
 lodev=$(sudo losetup -f) && \
-sudo losetup -o 100663296 $lodev out/FriendlyWrt*.img && \
+sudo losetup -P $lodev out/FriendlyWrt*.img && \
 sudo rm -rf /mnt/friendlywrt-tmp && \
 sudo mkdir -p /mnt/friendlywrt-tmp && \
-sudo mount $lodev /mnt/friendlywrt-tmp && \
+sudo mount ${lodev}p1 /mnt/friendlywrt-tmp && \
 sudo chown -R root:root /mnt/friendlywrt-tmp && \
 sudo umount /mnt/friendlywrt-tmp && \
 sudo losetup -d $lodev && \
