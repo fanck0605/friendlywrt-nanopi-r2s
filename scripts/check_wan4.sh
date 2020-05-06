@@ -30,14 +30,17 @@ while :; do
   # try to connect
   if ping -W 1 -c 1 "$lan_addr" >/dev/null 2>&1; then
     # No problem!
+    if [ $fail_count -gt 0 ]; then
+      logger 'Check Wan4: Network problems solved!'
+    fi
     fail_count=0
-    continue
+  else
+    # May have some problem
+    logger "Check Wan4: Network may have some problems!"
+    fail_count=$((fail_count + 1))
   fi
 
   if [ $fail_count -ge 3 ]; then
-    # Here we clear the counter first.
-    fail_count=0
-
     # Must have some problem! We refresh the ip address and try again!
     lan_addr=$(get_ipv4_address lan)
 
@@ -56,10 +59,5 @@ while :; do
     logger 'Check Wan4: Network problem! Network reloading...'
     /etc/init.d/network reload >/dev/null 2>&1
     sleep 2s
-  else
-    # May have some problem
-    logger "Check Wan4: Network may have some problem!"
-    fail_count=$((fail_count + 1))
-    continue
   fi
 done
