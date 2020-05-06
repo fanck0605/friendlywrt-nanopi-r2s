@@ -102,6 +102,11 @@ jobs:
           cp -a ./target/linux/generic/files/* ../rk3328/kernel/
           cd ../ && rm -rf openwrt
 
+      - name: RK3328 Unlock 1.5GHz
+        run: |
+          cd rk3328/kernel/
+          wget -O- https://raw.githubusercontent.com/armbian/build/master/patch/kernel/rockchip64-dev/RK3328-enable-1512mhz-opp.patch | git apply
+
       # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
       - name: Enable Kernel futures
         run: |
