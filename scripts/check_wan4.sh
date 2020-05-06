@@ -2,11 +2,11 @@
 # Copyright (c) 2020, Chuck <fanck0605@qq.com>
 #
 # this script is writing for openwrt
-# to use this script, you must install jq first
-# we need `jq` to parse json, `ifstatus`'s result
-# this script needs the interface named 'lan'
+# this script need the interface named 'lan'
+# to use this script, you must install 'jq' first
+# we need the `jq` to parse `ifstatus`'s result
 
-# usage: `nohup sh /path/to/checkwan4 >/dev/null 2>&1 &`
+# usage: `/bin/sh /path/to/check_wan4.sh >/dev/null 2>&1 &`
 
 logger 'Check Wan4: Script started!'
 
@@ -25,7 +25,7 @@ fi
 fail_count=0
 
 while :; do
-  sleep 1s
+  sleep 2s
 
   # try to connect
   if ping -W 1 -c 1 "$lan_addr" >/dev/null 2>&1; then
