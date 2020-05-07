@@ -19,12 +19,15 @@ on:
       - 'CHANGELOG.md'
   schedule:
     - cron: '00 18 * * *'
+  watch:
+    types: [started]
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
