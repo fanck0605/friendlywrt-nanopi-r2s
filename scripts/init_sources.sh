@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # 注意: 本脚本不会初始化编译所需的环境，请自行安装
 
 # Copyright (c) 2020, Chuck <fanck0605@qq.com>
