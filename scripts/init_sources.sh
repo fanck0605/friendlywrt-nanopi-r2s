@@ -17,22 +17,22 @@ cd nanopi-r2s
 
 # init friendlywrt source
 mkdir rk3328 && cd rk3328
-repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b master-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
+repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
 repo sync -c --no-clone-bundle -j8
 
 
 # init lean's project
 # enable some feeds
-cd friendlywrt
+pushd friendlywrt
 sed -i 's/#src-git/src-git/g' ./feeds.conf.default
-cd ..
+popd
 # end of enable some feeds
 
 # update argon
-cd friendlywrt
-rm -rf package/lean/luci-theme-argon
-git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
-cd ..
+pushd friendlywrt/package/lean
+rm -rf luci-theme-argon
+git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
+popd
 # end of update argon
 
 # install filebrowser
@@ -52,38 +52,49 @@ rm -rf r2sflasher
 # end of install r2sflasher
 
 # swap wan and lan
-cd friendlywrt
+pushd friendlywrt
 git apply ../../patches/003-openwrt-swap-wan-and-lan.patch
-cd ..
+popd
 # end of swap wan and lan
 # end of init lean's project
 
 
 # install openwrt's kernel patches
 git clone --depth 1 -b master https://github.com/openwrt/openwrt.git openwrt
-cd openwrt
+pushd openwrt
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/backport-5.4
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/pending-5.4
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/hack-5.4
 ./scripts/patch-kernel.sh ../kernel ./target/linux/octeontx/patches-5.4
 cp -a ./target/linux/generic/files/* ../kernel/
-cd ../ && rm -rf openwrt
+popd && rm -rf openwrt
 # end of install openwrt's kernel patches
 
 
 # enable full cone nat and flow offload
-cd kernel/
+pushd kernel
 wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
 git apply ../../patches/001-kernel-add-full_cone_nat.patch
 cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
-cd ../
+popd
 # end of enable full cone nat and flow offload
 
 # update feeds
-cd friendlywrt
+pushd friendlywrt
 ./scripts/feeds update -a
 ./scripts/feeds install -a
-cd ..
+popd
+
+# enable 1.5GHz
+pushd kernel
+wget -O- https://raw.githubusercontent.com/armbian/build/master/patch/kernel/rockchip64-dev/RK3328-enable-1512mhz-opp.patch | git apply
+popd
+
+# add daemon script
+pushd friendlywrt
+mv ../../scripts/check_net4.sh package/base-files/files/usr/bin/check_net4
+sed -i '/^exit/i\/bin/sh /usr/bin/check_net4 >/dev/null 2>&1 &' package/base-files/files/etc/rc.local
+popd
 
 # apply myconfig
 cat ../config_rk3328 > ./friendlywrt/.config
