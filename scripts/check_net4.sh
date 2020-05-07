@@ -6,9 +6,9 @@
 # to use this script, you must install 'jq' first
 # we need the `jq` to parse `ifstatus`'s result
 
-# usage: `/bin/sh /path/to/check_wan4.sh >/dev/null 2>&1 &`
+# usage: `/bin/sh /path/to/check_net4.sh >/dev/null 2>&1 &`
 
-logger 'Check Wan4: Script started!'
+logger 'Check Net4: Script started!'
 
 get_ipv4_address() {
   if ! if_status=$(ifstatus $1); then
@@ -18,7 +18,7 @@ get_ipv4_address() {
 }
 
 if ! lan_addr=$(get_ipv4_address lan); then
-  logger "Check Wan4: Don't support your network environment!"
+  logger "Check Net4: Don't support your network environment!"
   exit 1
 fi
 
@@ -31,12 +31,12 @@ while :; do
   if ping -W 1 -c 1 "$lan_addr" >/dev/null 2>&1; then
     # No problem!
     if [ $fail_count -gt 0 ]; then
-      logger 'Check Wan4: Network problems solved!'
+      logger 'Check Net4: Network problems solved!'
     fi
     fail_count=0
   else
     # May have some problem
-    logger "Check Wan4: Network may have some problems!"
+    logger "Check Net4: Network may have some problems!"
     fail_count=$((fail_count + 1))
   fi
 
@@ -48,7 +48,7 @@ while :; do
       continue
     fi
 
-    logger 'Check Wan4: Network problem! Firewall reloading...'
+    logger 'Check Net4: Network problem! Firewall reloading...'
     /etc/init.d/firewall reload >/dev/null 2>&1
     sleep 2s
 
@@ -56,7 +56,7 @@ while :; do
       continue
     fi
 
-    logger 'Check Wan4: Network problem! Network reloading...'
+    logger 'Check Net4: Network problem! Network reloading...'
     /etc/init.d/network reload >/dev/null 2>&1
     sleep 2s
   fi
