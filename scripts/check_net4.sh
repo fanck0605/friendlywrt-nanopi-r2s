@@ -39,11 +39,12 @@ while :; do
       logger 'Check Net4: Network problems solved!'
     fi
     fail_count=0
-  else
-    # May have some problem
-    logger "Check Net4: Network may have some problems!"
-    fail_count=$((fail_count + 1))
+    continue
   fi
+
+  # May have some problem
+  logger "Check Net4: Network may have some problems!"
+  fail_count=$((fail_count + 1))
 
   if [ $fail_count -ge 3 ]; then
     # Must have some problem! We refresh the ip address and try again!
