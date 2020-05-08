@@ -8,7 +8,10 @@
 
 # usage: `/bin/sh /path/to/check_net4.sh >/dev/null 2>&1 &`
 
-logger 'Check Net4: Script started!'
+if ! jq --version >/dev/null 2>&1; then
+  logger "Check Net4: Please install 'jq' first!"
+  exit 1
+fi
 
 get_ipv4_address() {
   if ! if_status=$(ifstatus $1); then
@@ -21,6 +24,8 @@ if ! lan_addr=$(get_ipv4_address lan); then
   logger "Check Net4: Don't support your network environment!"
   exit 1
 fi
+
+logger 'Check Net4: Script started!'
 
 fail_count=0
 
