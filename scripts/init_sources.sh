@@ -60,7 +60,7 @@ popd
 
 
 # install openwrt's kernel patches
-git clone --depth 1 -b master https://github.com/openwrt/openwrt.git openwrt
+git clone --depth 1 -b 18.06-kernel5.4 https://github.com/project-openwrt/openwrt.git openwrt
 pushd openwrt
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/backport-5.4
 ./scripts/patch-kernel.sh ../kernel ./target/linux/generic/pending-5.4
