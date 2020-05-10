@@ -92,6 +92,13 @@ jobs:
           cp -a r2sflasher/luci-app-r2sflasher rk3328/friendlywrt/package/songchenwen/
           rm -rf r2sflasher
 
+      - name: Install kmod-rtl8821cu
+        run: |
+          rm -rf rtl-drivers
+          git clone --depth 1 https://github.com/suwus/openwrt-feeds-driver-ext.git rtl-drivers
+          cp -a rtl-drivers/rtl8821cu rk3328/friendlywrt/package/lean/
+          rm -rf rtl-drivers
+
       # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
       - name: Install Openwrt patches
         run: |
