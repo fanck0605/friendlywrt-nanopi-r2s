@@ -7,6 +7,7 @@ WAN 和 LAN 默认是**互换**的，请注意网线接法。
 刷机请**不要**保留配置，任何因保留配置导致的问题不给予解决！
 
 ## 相关链接
+
 预编译的版本: https://github.com/fanck0605/nanopi_r2s/releases
 
 本项目采用的源码: 
@@ -16,6 +17,7 @@ https://github.com/fanck0605/friendlywrt-lean
 https://github.com/fanck0605/friendlywrt-kernel
 
 ## 说明
+
 * ipv4: 192.168.2.1
 * username: root
 * password: password
@@ -38,6 +40,11 @@ https://github.com/fanck0605/friendlywrt-kernel
      - 只需添加 `luci-app-samba` 即可，依赖会自动补全；请不要去自己添加任何多余组件，除非你知道自己在做什么。
 4. 如需usb 网卡功能，解除 `#cat config_usb-net >> rk3328/configs/config_rk3328` 的注释即可
      - 未经测试不保证能用
+
+## 性能测试
+
+下图为 500Mbps 电信家宽（PPPoE）测速，不是说 R2s 到性能瓶颈了
+![avatar](./pictures/PPPoE_500M.png)
 
 ## 注意
 应用 friendlyelec 修改的 [patch](https://github.com/fanck0605/nanopi_r2s/raw/lean/patches/002-openwrt-apply-friendlywrt.patch)，需要的自行拿走
