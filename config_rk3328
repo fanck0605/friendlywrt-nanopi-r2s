@@ -53,5 +53,5 @@ CONFIG_PACKAGE_luci-app-r2sflasher=y
 CONFIG_PACKAGE_luci-app-samba=y
 CONFIG_PACKAGE_luci-app-ttyd=y
 CONFIG_PACKAGE_luci-app-unblockmusic=y
+CONFIG_PACKAGE_luci-app-xlnetacc=y
 CONFIG_PACKAGE_luci-theme-argon=y
-# CONFIG_UnblockNeteaseMusic_NodeJS is not set
