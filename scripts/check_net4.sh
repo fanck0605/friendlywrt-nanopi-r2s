@@ -56,7 +56,7 @@ while :; do
     fi
 
     logger 'Check Net4: Network problem! Network reloading...'
-    /etc/init.d/network reload >/dev/null 2>&1
+    /etc/init.d/network restart >/dev/null 2>&1
     sleep 2s
   fi
 done
