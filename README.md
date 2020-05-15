@@ -43,7 +43,9 @@ https://github.com/fanck0605/friendlywrt-kernel
 
 ## 性能测试
 
-下图为 500Mbps 电信家宽（PPPoE）测速，不是说 R2s 到性能瓶颈了
+下图为 500Mbps 电信家宽（PPPoE）测速，实际占用和连接数有关。在 500Mbps 满速 BT 下载时，占用可以高达 40%。
+所以 FlowOffload 还是有用的，毕竟如果测速都快占满 CPU 了，就没有剩余资源给其他网络操作了，实际使用肯定大打折扣的。
+
 ![avatar](./pictures/PPPoE_500M.png)
 
 ## 注意
