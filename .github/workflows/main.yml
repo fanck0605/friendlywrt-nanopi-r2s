@@ -85,13 +85,14 @@ jobs:
           rm -rf luci-theme-argon
           git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 
-      - name: Install filebrowser
+      - name: Install ctcgfw's packages
         run: |
           rm -rf openwrt
           git clone --depth 1 -b openwrt-18.06 https://github.com/project-openwrt/openwrt.git
           mkdir -p rk3328/friendlywrt/package/ctcgfw
           cp -a openwrt/package/ctcgfw/filebrowser rk3328/friendlywrt/package/ctcgfw/
           cp -a openwrt/package/ctcgfw/luci-app-filebrowser rk3328/friendlywrt/package/ctcgfw/
+          cp -a openwrt/package/ctcgfw/rtl8821cu rk3328/friendlywrt/package/ctcgfw/
           rm -rf openwrt
 
       - name: Install luci-app-r2sflasher
