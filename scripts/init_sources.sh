@@ -20,6 +20,13 @@ mkdir rk3328 && cd rk3328
 repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
 repo sync -c --no-clone-bundle -j8
 
+# upgrade source
+cd friendlywrt
+git remote add lean https://github.com/coolsnowwolf/lede.git
+git fetch lean master && git rebase lean/master
+cd ../kernel
+git remote add linux https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+git fetch linux linux-5.4.y && git rebase linux/linux-5.4.y
 
 # init lean's project
 # enable some feeds
