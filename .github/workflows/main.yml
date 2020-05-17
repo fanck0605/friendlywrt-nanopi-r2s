@@ -61,6 +61,7 @@ jobs:
           rm -rf rk3328 && mkdir rk3328 && cd rk3328
           repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
           repo sync -c --no-clone-bundle -j8
+          sed -i 's|friendlyarm/rtl8821CU|fanck0605/rtl8821CU|g' ./scripts/sd-fuse/build-kernel.sh
 
       - name: Upgrade Source
         run: |
