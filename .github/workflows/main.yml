@@ -8,15 +8,6 @@ name: lean's openwrt
 #
 
 on:
-  push:
-    branches:
-      - lean
-    paths:
-      - '.github/workflows/main.yml'
-      - 'patches/**'
-      - 'config_rk3328'
-      - 'nanopi-r2_linux_defconfig'
-      - 'CHANGELOG.md'
   schedule:
     - cron: '00 18 * * *'
   watch:
