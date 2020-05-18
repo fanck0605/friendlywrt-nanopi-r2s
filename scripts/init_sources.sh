@@ -19,6 +19,7 @@ cd nanopi-r2s
 mkdir rk3328 && cd rk3328
 repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lean -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
 repo sync -c --no-clone-bundle -j8
+sed -i 's|friendlyarm/rtl8821CU|fanck0605/rtl8821CU|g' ./scripts/sd-fuse/build-kernel.sh
 
 # upgrade source
 cd friendlywrt
@@ -27,6 +28,7 @@ git fetch lean master && git rebase lean/master
 cd ../kernel
 git remote add linux https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 git fetch linux linux-5.4.y && git rebase linux/linux-5.4.y
+cd ..
 
 # init lean's project
 # enable some feeds
@@ -47,6 +49,7 @@ git clone --depth 1 -b openwrt-18.06 https://github.com/project-openwrt/openwrt.
 mkdir -p friendlywrt/package/ctcgfw
 cp -a openwrt/package/ctcgfw/filebrowser friendlywrt/package/ctcgfw/
 cp -a openwrt/package/ctcgfw/luci-app-filebrowser friendlywrt/package/ctcgfw/
+cp -a openwrt/package/ctcgfw/rtl8821cu friendlywrt/package/ctcgfw/
 rm -rf openwrt
 # end of install filebrowser
 
