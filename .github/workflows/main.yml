@@ -139,7 +139,12 @@ jobs:
       - name: Build FriendlyWrt
         run: |
           cd rk3328
+          set +e
           ./build.sh nanopi_r2s.mk
+          build_status=$?
+          set -e
+          sudo df -lh
+          exit $build_status
 
       - name: Fix FriendlyWrt rootfs owner and group
         run: |
