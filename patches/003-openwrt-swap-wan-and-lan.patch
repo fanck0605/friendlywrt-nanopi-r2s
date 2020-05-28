@@ -1,0 +1,13 @@
+diff --git a/target/linux/rockchip-rk3328/base-files/etc/board.d/02_network b/target/linux/rockchip-rk3328/base-files/etc/board.d/02_network
+index c9d9478c..84cf1643 100755
+--- a/target/linux/rockchip-rk3328/base-files/etc/board.d/02_network
++++ b/target/linux/rockchip-rk3328/base-files/etc/board.d/02_network
+@@ -10,7 +10,7 @@ board_config_update
+ case "$(board_name)" in
+ "friendlyelec,nanopi-r2" \
+ |"friendlyelec,nanopi-r2s")
+-    ucidef_set_interfaces_lan_wan "eth1" "eth0"
++    ucidef_set_interfaces_lan_wan "eth0" "eth1"
+ 	;;
+ *)
+ 	ucidef_set_interface_wan 'eth0'

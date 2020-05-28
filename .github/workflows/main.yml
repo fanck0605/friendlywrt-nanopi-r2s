@@ -1,0 +1,174 @@
+name: lienol's openwrt
+
+# Copyright (c) 2020, Chuck <fanck0605@qq.com>
+#
+# 警告:
+# 对着屏幕的哥们, 我们允许你使用此脚本, 但不允许你抹去作者的信息, 请保留这段话.
+# 你可以随意使用本脚本的代码, 但请注明出处.
+#
+
+on:
+  push:
+    branches:
+      - openwrt-lienol
+    paths:
+      - '.github/workflows/main.yml'
+      - 'patches/**'
+      - 'config_rk3328'
+      - 'nanopi-r2_linux_defconfig'
+  schedule:
+    - cron: '00 18 * * *'
+  watch:
+    types: [started]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: openwrt-lienol
+
+      # refer to klever1988/nanopi-openwrt and soffchen/NanoPi-R2S
+      - name: Initialization Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          root_files=$(ls / | grep -vE '^(proc|run|sys)$' | sed 's:^:/:')
+          sudo -E du -ah $root_files | grep -E '^[0-9.]*?[GTPEZY]'
+          sudo -E docker image prune -a -f
+          sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get update
+          sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3.5 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf
+          wget -O - https://raw.githubusercontent.com/friendlyarm/build-env-on-ubuntu-bionic/master/install.sh | bash
+          git config --global user.name "Chuck"
+          git config --global user.email "fanck0605@qq.com"
+
+      - name: Install Repo
+        run: |
+          rm -rf repo
+          git clone https://github.com/friendlyarm/repo
+          sudo -E cp repo/repo /usr/bin/
+          rm -rf repo
+
+      - name: Initialization Source
+        run: |
+          rm -rf rk3328 && mkdir rk3328 && cd rk3328
+          repo init -u https://github.com/fanck0605/friendlywrt_mainfests -b openwrt-lienol -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo --no-clone-bundle
+          repo sync -c --no-clone-bundle -j8
+
+      - name: Upgrade Source
+        run: |
+          cd rk3328/friendlywrt
+          git remote add openwrt https://github.com/openwrt/openwrt.git
+          git fetch openwrt openwrt-19.07 && git rebase openwrt/openwrt-19.07
+          cd ../kernel
+          git remote add linux https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+          git fetch linux linux-5.4.y && git rebase linux/linux-5.4.y
+
+      - name: Install luci-app-r2sflasher
+        run: |
+          rm -rf r2sflasher
+          mkdir -p rk3328/friendlywrt/package/songchenwen
+          git clone https://github.com/songchenwen/nanopi-r2s.git r2sflasher
+          cp -a r2sflasher/luci-app-r2sflasher rk3328/friendlywrt/package/songchenwen/
+          rm -rf r2sflasher
+
+      # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
+      - name: Install Openwrt patches
+        run: |
+          rm -rf openwrt
+          git clone --depth 1 -b 18.06-kernel5.4 https://github.com/project-openwrt/openwrt.git openwrt
+          cd openwrt
+          ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/backport-5.4
+          ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/pending-5.4
+          ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
+          ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/octeontx/patches-5.4
+          cp -a ./target/linux/generic/files/* ../rk3328/kernel/
+          cd ../ && rm -rf openwrt
+
+      - name: RK3328 Unlock 1.5GHz
+        run: |
+          cd rk3328/kernel/
+          wget -O- https://raw.githubusercontent.com/armbian/build/master/patch/kernel/rockchip64-dev/RK3328-enable-1512mhz-opp.patch | git apply
+
+      # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
+      - name: Enable Kernel futures
+        run: |
+          cd rk3328/kernel/
+          wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
+          git apply ../../patches/001-kernel-add-full_cone_nat.patch
+          cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
+
+      - name: Customize Configuration Files
+        run: |
+          cat config_rk3328 > rk3328/configs/config_rk3328
+          #cat config_usb-net >> rk3328/configs/config_rk3328
+
+      - name: Add Check Wan4
+        run: |
+          cd rk3328/friendlywrt
+          mv ../../scripts/check_net4.sh package/base-files/files/usr/bin/check_net4
+          sed -i '/^exit/i\/bin/sh /usr/bin/check_net4 >/dev/null 2>&1 &' package/base-files/files/etc/rc.local
+
+      # 如果不喜欢互换, 直接注释即可
+      - name: Swap wan and lan
+        run: |
+          cd rk3328/friendlywrt
+          git apply ../../patches/003-openwrt-swap-wan-and-lan.patch
+
+      - name: Build FriendlyWrt
+        run: |
+          cd rk3328
+          set +e
+          ./build.sh nanopi_r2s.mk
+          build_status=$?
+          set -e
+          sudo -E df -lh
+          exit $build_status
+
+      - name: Fix FriendlyWrt rootfs owner and group
+        run: |
+          sudo -E df -lh
+          lodev=$(sudo -E losetup -f)
+          echo "found unused loop dev $lodev"
+          sudo -E losetup -P ${lodev} rk3328/out/FriendlyWrt*.img
+          sudo -E rm -rf /mnt/friendlywrt-tmp
+          sudo -E mkdir -p /mnt/friendlywrt-tmp
+          sudo -E mount ${lodev}p1 /mnt/friendlywrt-tmp
+          sudo -E chown -R root:root /mnt/friendlywrt-tmp
+          sudo -E umount /mnt/friendlywrt-tmp
+          sudo -E losetup -d ${lodev}
+
+      - name: Assemble Artifact
+        run: |
+          rm -rf ./artifact/
+          mkdir -p ./artifact/
+          gzip rk3328/out/FriendlyWrt*.img
+          cp rk3328/out/FriendlyWrt*.img.gz ./artifact/
+
+      # 保存交叉编译配置, 需要先设置平台
+      - name: Save Configurations
+        run: |
+          cd rk3328/friendlywrt
+          ./scripts/diffconfig.sh > ../../artifact/config-lite
+          cp .config ../../artifact/config-full
+          cd ../kernel
+          export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+          export CROSS_COMPILE='aarch64-linux-gnu-'
+          export ARCH=arm64
+          make savedefconfig
+          cp .config ../../artifact/kconfig-full
+          cp defconfig ../../artifact/kconfig-lite
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: FriendlyWrt
+          path: ./artifact/

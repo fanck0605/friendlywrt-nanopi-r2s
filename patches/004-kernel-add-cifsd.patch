@@ -1,0 +1,38 @@
+diff --git a/arch/arm64/configs/nanopi-r2_linux_defconfig b/arch/arm64/configs/nanopi-r2_linux_defconfig
+index 240a9bf57f7a..a8de3f7e76e3 100644
+--- a/arch/arm64/configs/nanopi-r2_linux_defconfig
++++ b/arch/arm64/configs/nanopi-r2_linux_defconfig
+@@ -1550,6 +1550,9 @@ CONFIG_CIFS_XATTR=y
+ CONFIG_CIFS_POSIX=y
+ CONFIG_CIFS_DFS_UPCALL=y
+ CONFIG_CIFS_FSCACHE=y
++CONFIG_SMB_SERVER=m
++CONFIG_SMB_INSECURE_SERVER=y
++CONFIG_SMB_SERVER_SMBDIRECT=y
+ CONFIG_CODA_FS=m
+ CONFIG_9P_FS=m
+ CONFIG_9P_FSCACHE=y
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 2501e6f1f965..94461f7f2737 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -312,6 +312,7 @@ config NFS_COMMON
+ source "net/sunrpc/Kconfig"
+ source "fs/ceph/Kconfig"
+ source "fs/cifs/Kconfig"
++source "fs/cifsd/Kconfig"
+ source "fs/coda/Kconfig"
+ source "fs/afs/Kconfig"
+ source "fs/9p/Kconfig"
+diff --git a/fs/Makefile b/fs/Makefile
+index 14231b4cf383..e085dc0ab41d 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -96,6 +96,7 @@ obj-$(CONFIG_NLS)		+= nls/
+ obj-$(CONFIG_UNICODE)		+= unicode/
+ obj-$(CONFIG_SYSV_FS)		+= sysv/
+ obj-$(CONFIG_CIFS)		+= cifs/
++obj-$(CONFIG_SMB_SERVER)	+= cifsd/
+ obj-$(CONFIG_HPFS_FS)		+= hpfs/
+ obj-$(CONFIG_NTFS_FS)		+= ntfs/
+ obj-$(CONFIG_UFS_FS)		+= ufs/
