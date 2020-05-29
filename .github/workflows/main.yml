@@ -109,6 +109,8 @@ jobs:
           rm -rf openwrt
           git clone --depth 1 -b 18.06-kernel5.4 https://github.com/project-openwrt/openwrt.git openwrt
           cd openwrt
+          cp -f ../patches/952-net-conntrack-events-support-multiple-registrant.patch \
+          ./target/linux/generic/hack-5.4/952-net-conntrack-events-support-multiple-registrant.patch
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/backport-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/pending-5.4
           ./scripts/patch-kernel.sh ../rk3328/kernel ./target/linux/generic/hack-5.4
