@@ -126,6 +126,9 @@ jobs:
       - name: Build FriendlyWrt
         run: |
           cd rk3328
+          pushd friendlywrt
+          git add . && git commit -m "personal modification"
+          popd
           set +e
           ./build.sh nanopi_r2s.mk
           build_status=$?
