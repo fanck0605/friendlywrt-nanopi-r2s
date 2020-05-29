@@ -10,7 +10,7 @@ name: lean's openwrt
 on:
   push:
     branches:
-      - lean
+      - openwrt-lean
     paths:
       - '.github/workflows/main.yml'
       - 'patches/**'
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: lean
+          ref: openwrt-lean
 
       # refer to klever1988/nanopi-openwrt and soffchen/NanoPi-R2S
       - name: Initialization Environment
