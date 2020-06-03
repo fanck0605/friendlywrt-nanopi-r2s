@@ -72,7 +72,7 @@ jobs:
           git remote add linux https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
           git fetch linux linux-5.4.y && git rebase linux/linux-5.4.y
 
-      - name: Install luci-app-r2sflasher
+      - name: OpenWrt - Install luci-app-r2sflasher
         run: |
           rm -rf r2sflasher
           mkdir -p rk3328/friendlywrt/package/songchenwen
@@ -81,7 +81,7 @@ jobs:
           rm -rf r2sflasher
 
       # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
-      - name: Install Openwrt patches
+      - name: Kernel - Install Openwrt's Patches
         run: |
           rm -rf openwrt
           git clone --depth 1 -b master https://github.com/openwrt/openwrt.git openwrt
@@ -94,25 +94,25 @@ jobs:
           cp -a ./target/linux/generic/files/* ../rk3328/kernel/
           cd ../ && rm -rf openwrt
 
-      - name: RK3328 Unlock 1.5GHz
+      - name: Kernel - Unlock RK3328's 1.5GHz
         run: |
           cd rk3328/kernel/
           wget -O- https://raw.githubusercontent.com/armbian/build/master/patch/kernel/rockchip64-dev/RK3328-enable-1512mhz-opp.patch | git apply
 
       # refer to klever1988/nanopi-openwrt, modified by Chuck <fanck0605@qq.com>
-      - name: Enable Kernel futures
+      - name: Kernel - Add FullCone NAT
         run: |
           cd rk3328/kernel/
           wget -O net/netfilter/xt_FULLCONENAT.c https://raw.githubusercontent.com/Chion82/netfilter-full-cone-nat/master/xt_FULLCONENAT.c
           git apply ../../patches/001-kernel-add-full_cone_nat.patch
-          cat ../../nanopi-r2_linux_defconfig > ./arch/arm64/configs/nanopi-r2_linux_defconfig
 
       - name: Customize Configuration Files
         run: |
+          cat nanopi-r2_linux_defconfig > rk3328/kernel/arch/arm64/configs/nanopi-r2_linux_defconfig
           cat config_rk3328 > rk3328/configs/config_rk3328
           #cat config_usb-net >> rk3328/configs/config_rk3328
 
-      - name: Add Check Wan4
+      - name: OpenWrt - Add Check Wan4
         run: |
           cd rk3328/friendlywrt
           mv ../../scripts/check_net4.sh package/base-files/files/usr/bin/check_net4
@@ -126,18 +126,11 @@ jobs:
 
       - name: Build FriendlyWrt
         run: |
-          cd rk3328
-          pushd friendlywrt
-          git add . && git commit -m "personal modification"
-          popd
-          set +e
-          ./build.sh nanopi_r2s.mk
-          build_status=$?
-          set -e
           sudo -E df -lh
-          exit $build_status
+          cd rk3328
+          ./build.sh nanopi_r2s.mk
 
-      - name: Fix FriendlyWrt rootfs owner and group
+      - name: Fix Rootfs Permission
         run: |
           sudo -E df -lh
           lodev=$(sudo -E losetup -f)
