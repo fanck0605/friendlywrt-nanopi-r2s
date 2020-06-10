@@ -165,7 +165,7 @@ jobs:
           cp defconfig ../../artifact/kconfig-lite
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
           name: FriendlyWrt
           path: ./artifact/
