@@ -1,5 +1,7 @@
 # 使用 Github Actions 在线编译 NanoPi-R2s 固件
 
+## 不再维护，请到 [openwrt-nanopi-r2s](https://github.com/fanck0605/openwrt-nanopi-r2s) 获取新的固件
+
 ## 温情提醒
 
 WAN 和 LAN 默认是**互换**的，请注意网线接法。
